@@ -1,0 +1,498 @@
+
+
+
+
+datarightplus                                                     S. Low
+Internet-Draft                                                   Biza.io
+Intended status: Experimental                               21 July 2024
+Expires: 22 January 2025
+
+
+                  DataRight+: Bulk Transaction Detail
+    draft-authors-datarightplus-banking-bulk-transactions-v1-latest
+
+Abstract
+
+   This specification outlines the DataRight+ extension functionality
+   for an asynchronous bulk banking transaction detail capability within
+   the existing constructs of the profile described in [PROFILE-AU-CDR].
+
+   The functionality exposed by the Provider allows the Initiator to
+   request, using the same filter parameters of the [CDS] List Banking
+   Transactions, a full set of Banking Transaction Detail via a job
+   queue, poll and retrieval mechanism.
+
+Notational Conventions
+
+   The keywords "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD
+   NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
+   interpreted as described in [RFC2119].
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 22 January 2025.
+
+Copyright Notice
+
+   Copyright (c) 2024 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.
+
+Table of Contents
+
+   1.  Scope
+   2.  Terms & Definitions
+   3.  High Level Process
+   4.  Provider Resource Server Endpoints
+   5.  Key Schema Definitions
+     5.1.  Request Banking Transaction Detail List
+     5.2.  Action Status Metadata
+       5.2.1.  Action Statuses
+     5.3.  Banking Transaction Detail
+   6.  Non-Normative Examples
+     6.1.  Request Banking Transaction Detail List
+     6.2.  Get Banking Transaction Detail List Status
+     6.3.  Retrieve Banking Transaction Detail List
+   7.  Implementation Considerations
+   8.  Normative References
+   Author's Address
+
+1.  Scope
+
+   The scope of this specification is focused on describing an
+   asynchronous capability for downloading bulk banking transactions
+   from a specific Provider supplied resource server.  This
+   specification does not seek to provide further definition as this is
+   left to what is specified in [PROFILE-AU-CDR].
+
+2.  Terms & Definitions
+
+   This specification uses the terms "Provider" and "Initiator" as
+   defined by [DATARIGHTPLUS-ROSETTA].
+
+3.  High Level Process
+
+   This document, as extended further in OpenAPI format within
+   [DATARIGHTPLUS-REDOCLY], describes the endpoints to deliver the Bulk
+   Banking Transaction Detail capability.  An identified challenge faced
+   by participants within the Australian CDR is a desire of Initiators
+   to obtain Banking Transaction Details for all transactions while
+   balancing the performance constraints of Providers.  On the one hand
+   Initiators are often needing to iterate over lists of transactions to
+   obtain, on an individual basis, transaction details, sometimes
+   hitting the upper bounds of the prescribed Non-Functional
+   Requirements while on the other hand Providers often must interact
+   with many different sources of data to provide all the attributes
+   contained within the BankingTransactionDetailV1 schema.
+
+   At a high level the process expected to be followed through the
+   implementation of the prescribed endpoints is as follows:
+
+   1.  Initiator obtains a Consumer approved token, containing the
+       bank:transaction:read and bank:accounts.basic:read scopes from
+       the Provider through normal processes as prescribed within
+       [PROFILE-AU-CDR], [CDS] and [CDR-RULES];
+   2.  Initiator obtains a list of banking accounts, using the
+       listBankingAccounts operation, as described in
+       [DATARIGHTPLUS-REDOCLY].  Further elaboration regarding this
+       endpoint is outside the scope of this document;
+   3.  Initiator lodges a requestBankingTransactionDetailList request,
+       including account identifier and desired filters, from the
+       Provider Resource Server;
+   4.  The Provider responds with metadata including the Action
+       Identifier to be used to address the action by the Initiator;
+   5.  Periodically the Initiator polls the Provider Resource Server
+       using the getBankingTransactionDetailListStatus operation until
+       the status returned indicates readiness;
+   6.  When the Provider indicates readiness, Initiator calls the
+       retrieveBankingTransactionDetailList, the Provider responds with
+       a continuous list of BankingTransactionDetailV1 objects;
+
+4.  Provider Resource Server Endpoints
+
+   The Provider SHALL make available, as described further in the
+   following subsections and specified in OpenAPI format within
+   [DATARIGHTPLUS-REDOCLY], the following endpoints where the token is
+   granted the bank:transactions:read scope value:
+
+   +==================================+=====+=========================+
+   | Resource Server Endpoint         | x-v | Description             |
+   +==================================+=====+=========================+
+   | POST /actions/bulk-banking-      | 1   | Used to lodge Banking   |
+   | transactions                     |     | Transaction Detail List |
+   |                                  |     | requests.               |
+   +----------------------------------+-----+-------------------------+
+   |                                  |     | Expects a wrapped       |
+   |                                  |     | Request Banking         |
+   |                                  |     | Transaction Detail List |
+   |                                  |     | (#request-banking-      |
+   |                                  |     | transaction-detail-     |
+   |                                  |     | list) object to         |
+   +----------------------------------+-----+-------------------------+
+   |                                  |     | be submitted and        |
+   |                                  |     | returns a payload       |
+   |                                  |     | containing Action       |
+   |                                  |     | Status Metadata         |
+   |                                  |     | (#action-status-        |
+   |                                  |     | metadata)               |
+   +----------------------------------+-----+-------------------------+
+   | GET /actions/bulk-banking-       | 1   | Returns the current     |
+   | transactions/{actionId}          |     | status of request.      |
+   |                                  |     | Accepts an actionId as  |
+   |                                  |     | a path parameter and    |
+   |                                  |     | returns a payload       |
+   |                                  |     | containing              |
+   +----------------------------------+-----+-------------------------+
+   |                                  |     | Action Status Metadata  |
+   |                                  |     | (#action-status-        |
+   |                                  |     | metadata) as well as    |
+   |                                  |     | the original            |
+   +----------------------------------+-----+-------------------------+
+   |                                  |     | Request Banking         |
+   |                                  |     | Transaction Detail List |
+   |                                  |     | (#request-banking-      |
+   |                                  |     | transaction-detail-     |
+   |                                  |     | list) request content   |
+   +----------------------------------+-----+-------------------------+
+   | GET /actions/bulk-banking-       | 1   | Provides the result     |
+   | transactions/{actionId}/retrieve |     | payload.  Accepts an    |
+   |                                  |     | actionId as a path      |
+   |                                  |     | parameter and returns a |
+   |                                  |     | payload containing a    |
+   |                                  |     | list of                 |
+   +----------------------------------+-----+-------------------------+
+   |                                  |     | Banking Transaction     |
+   |                                  |     | Detail (#banking-       |
+   |                                  |     | transaction-detail).    |
+   |                                  |     |                         |
+   |                                  |     | If the action is not in |
+   |                                  |     | COMPLETE status returns |
+   +----------------------------------+-----+-------------------------+
+   |                                  |     | urn:au-cds:error:cds-   |
+   |                                  |     | all:Resource/           |
+   |                                  |     | Unavailable error as    |
+   |                                  |     | described in [CDS].     |
+   |                                  |     |                         |
+   |                                  |     | If the action is in     |
+   |                                  |     | EXPIRED or              |
+   +----------------------------------+-----+-------------------------+
+   |                                  |     | FAILED status returns   |
+   |                                  |     | urn:au-cds:error:cds-   |
+   |                                  |     | all:Resource/Invalid    |
+   |                                  |     | error as described in   |
+   |                                  |     | [CDS]                   |
+   +----------------------------------+-----+-------------------------+
+
+                                 Table 1
+
+   Note: Each endpoint supports a number of other error behaviours,
+   these are documented within [DATARIGHTPLUS-REDOCLY] and are intended
+   to align with the behaviours described within [CDS].
+
+5.  Key Schema Definitions
+
+   Key schemas utilised for achieving the defined scope are described as
+   follows.
+
+5.1.  Request Banking Transaction Detail List
+
+   Defined within [DATARIGHTPLUS-REDOCLY] as
+   RequestBankingTransactionDetailListDataV1 this schema is used to
+   provide the request information, is replayed by the Get Banking
+   Transaction Detail List Status endpoint, and is intended to be a
+   like-for-like to the input parameters for List Transactions for
+   Banking Account as outlined within [CDS].
+
+   +============+=============+================+=======================+
+   | Attribute  | Requirement | Type           | Description           |
+   +============+=============+================+=======================+
+   | accountId  | REQUIRED    | String         | ID of a specific      |
+   |            |             |                | account to obtain     |
+   |            |             |                | data for.  This is    |
+   |            |             |                | a tokenised ID        |
+   |            |             |                | previously            |
+   |            |             |                | obtained from the     |
+   |            |             |                | List Banking          |
+   |            |             |                | Accounts endpoint.    |
+   +------------+-------------+----------------+-----------------------+
+   | oldestDate | REQUIRED    | String         | Constrain the         |
+   |            |             | (DateString)   | request to records    |
+   |            |             |                | with effective        |
+   |            |             |                | date at or after      |
+   |            |             |                | this date.  Format    |
+   |            |             |                | is aligned to         |
+   |            |             |                | DateString common     |
+   |            |             |                | type                  |
+   +------------+-------------+----------------+-----------------------+
+   | newestDate | REQUIRED    | String         | Constrain the         |
+   |            |             | (DateString)   | request to records    |
+   |            |             |                | with effective        |
+   |            |             |                | date at or before     |
+   |            |             |                | this date.  Format    |
+   |            |             |                | is aligned to         |
+   |            |             |                | DateString common     |
+   |            |             |                | type                  |
+   +------------+-------------+----------------+-----------------------+
+   | minAmount  | OPTIONAL    | String         | Filter                |
+   |            |             | (AmountString) | transactions to       |
+   |            |             |                | only transactions     |
+   |            |             |                | with amounts          |
+   |            |             |                | higher or equal to    |
+   |            |             |                | than this amount      |
+   +------------+-------------+----------------+-----------------------+
+   | maxAmount  | OPTIONAL    | String         | Filter                |
+   |            |             | (AmountString) | transactions to       |
+   |            |             |                | only transactions     |
+   |            |             |                | with amounts less     |
+   |            |             |                | than or equal to      |
+   |            |             |                | than this amount      |
+   +------------+-------------+----------------+-----------------------+
+
+                                  Table 2
+
+5.2.  Action Status Metadata
+
+   Defined within [DATARIGHTPLUS-REDOCLY] as MetaActionStatusV1 this
+   schema provides a high level status of the action, in this case the
+   Bulk Banking Transaction Detail List request as follows:
+
+   +===================+=============+========+========================+
+   | Attribute         | Requirement | Type   | Description            |
+   +===================+=============+========+========================+
+   | actionId          | REQUIRED    | String | Globally unique        |
+   |                   |             | (UUID) | identifier for this    |
+   |                   |             |        | action.  MUST not      |
+   |                   |             |        | be reused foID of a    |
+   |                   |             |        | specific account to    |
+   |                   |             |        | obtain data for.       |
+   |                   |             |        | This is a tokenised    |
+   |                   |             |        | ID previously          |
+   |                   |             |        | obtained from the      |
+   |                   |             |        | List Banking           |
+   |                   |             |        | Accounts endpoint.     |
+   +-------------------+-------------+--------+------------------------+
+   | status            | REQUIRED    | String | Status of the          |
+   |                   |             | (Enum) | action based on one    |
+   |                   |             |        | of the enumerations    |
+   |                   |             |        | described in Action    |
+   |                   |             |        | Statuses (#action-     |
+   |                   |             |        | statuses)              |
+   +-------------------+-------------+--------+------------------------+
+   | statusDescription | REQUIRED    | String | Extended               |
+   |                   |             |        | description of the     |
+   |                   |             |        | status containing      |
+   |                   |             |        | content at the         |
+   |                   |             |        | discretion of the      |
+   |                   |             |        | Provider               |
+   +-------------------+-------------+--------+------------------------+
+
+                                  Table 3
+
+5.2.1.  Action Statuses
+
+   +============+======================================================+
+   | Status     | Description                                          |
+   +============+======================================================+
+   | PENDING    | Received but processing has not yet been             |
+   |            | initiated.                                           |
+   +------------+------------------------------------------------------+
+   | PROCESSING | Currently processing and being prepared for          |
+   |            | download.                                            |
+   +------------+------------------------------------------------------+
+   | COMPLETE   | Completed and available for download at the          |
+   |            | Retrieve Banking Transaction Detail List endpoint.   |
+   +------------+------------------------------------------------------+
+   | EXPIRED    | Completed successfully but no longer available for   |
+   |            | download.                                            |
+   +------------+------------------------------------------------------+
+   | FAILED     | Failed to complete successfully, further             |
+   |            | information may be available within                  |
+   |            | statusDescription                                    |
+   +------------+------------------------------------------------------+
+
+                                  Table 4
+
+5.3.  Banking Transaction Detail
+
+   The results output by the Retrieve Banking Transaction Detail List
+   operation is a list of BankingTransactionDetailV1 as defined within
+   [DATARIGHTPLUS-REDOCLY].
+
+6.  Non-Normative Examples
+
+6.1.  Request Banking Transaction Detail List
+
+   Request POST /actions/bulk-banking-transactions:
+
+   {
+     "version": "V1",
+     "data": {
+       "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+       "oldestDate": "2022-07-01",
+       "newestDate": "2024-06-30"
+     }
+   }
+
+   Response returned as follows:
+
+   {
+     "version": "V1",
+     "data": {
+       "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+       "oldestDate": "2022-07-01",
+       "newestDate": "2024-06-30"
+     },
+     "links": {
+       "self": "https://api.provider.com.au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
+     },
+     "meta": {
+       "actionId": "9fe3f97e-c22c-4516-b6ed-05c0486db195",
+       "status": "PROCESSING",
+       "statusDescription": "Job Received, contacting internal systems to formulate response."
+     }
+   }
+
+6.2.  Get Banking Transaction Detail List Status
+
+   Request GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-
+   b6ed-05c0486db195 with response returned as follows:
+
+   {
+     "version": "V1",
+     "data": {
+       "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+       "oldestDate": "2022-07-01",
+       "newestDate": "2024-06-30"
+     },
+     "links": {
+       "self": "https://api.provider.com.au/dio-au/v1/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
+     },
+     "meta": {
+       "actionId": "9fe3f97e-c22c-4516-b6ed-05c0486db195",
+       "status": "PROCESSING",
+       "statusDescription": "Job Received, contacting internal systems to formulate response."
+     }
+   }
+
+6.3.  Retrieve Banking Transaction Detail List
+
+   Request GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-
+   b6ed-05c0486db195/retrieve with response returned as follows:
+
+   {
+     "version": "V1",
+     "data": [
+       {
+         "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+         "amount": "133.55",
+         "apcaNumber": "484799",
+         "billerCode": "75556",
+         "billerName": "TAX OFFICE PAYMENTS",
+         "crn": "1234123412341",
+         "currency": "AUD",
+         "description": "Outbound payment to ATO",
+         "executionDateTime": "2022-03-03T03:03:03.3Z",
+         "isDetailAvailable": true,
+         "merchantCategoryCode": "5200",
+         "merchantName": "Freedom Furniture",
+         "postingDateTime": "2022-03-03T03:03:03.3Z",
+         "reference": "Payment for Services",
+         "status": "POSTED",
+         "transactionId": "8cce04fbcc0fe8307e8c221b5ae497691935a368e98f5478610c60ca4ef81caf",
+         "type": "PAYMENT",
+         "valueDateTime": "2022-03-13T03:03:03.3Z",
+         "extendedData": {
+           "extensionUType": "x2p101Payload",
+           "payee": "string",
+           "payer": "string",
+           "service": "X2P1.01",
+           "x2p101Payload": {
+             "endToEndId": "string",
+             "extendedDescription": "An extended string description.",
+             "purposeCode": "string"
+           }
+         }
+       }
+     ],
+     "links": {
+       "self": "https://api.provider.com.au/dio-au/v1/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve"
+     },
+     "meta": {
+       "actionId": "9fe3f97e-c22c-4516-b6ed-05c0486db195",
+       "status": "COMPLETE",
+       "statusDescription": "Job complete, ready for download."
+     }
+   }
+
+7.  Implementation Considerations
+
+   The availability of this functionality is expected to be discovered
+   using the specification outlined in [DATARIGHTPLUS-DISCOVERY].  The
+   version negotiation utilised by this specification is outlined within
+   [DATARIGHTPLUS-ENHANCED-VERSIONING].
+
+8.  Normative References
+
+   [CDR-RULES]
+              Department of the Treasury, "Competition and Consumer
+              (Consumer Data Right) Rules 2020",
+              <https://www.legislation.gov.au/F2020L00094/2023-07-22/
+              text>.
+
+   [CDS]      Data Standards Body (Treasury), "Consumer Data Standards
+              (CDS)", <https://consumerdatastandardsaustralia.github.io/
+              standards>.
+
+   [DATARIGHTPLUS-DISCOVERY]
+              Low, S., "DataRight+: Discovery",
+              <https://datarightplus.github.io/datarightplus-discovery/
+              draft-authors-datarightplus-discovery.html>.
+
+   [DATARIGHTPLUS-ENHANCED-VERSIONING]
+              Low, S., "DataRight+: Enhanced Endpoint Versioning",
+              <https://datarightplus.github.io/datarightplus-enhanced-
+              versioning/draft-authors-datarightplus-enhanced-
+              versioning.html>.
+
+   [DATARIGHTPLUS-REDOCLY]
+              Low, S., Kolera, B., and W. Cai, "DataRight+: Redocly",
+              <https://datarightplus.github.io/datarightplus-redocly>.
+
+   [DATARIGHTPLUS-ROSETTA]
+              Low, S., "DataRight+ Rosetta Stone",
+              <https://datarightplus.github.io/datarightplus-rosetta/
+              draft-authors-datarightplus-rosetta.html>.
+
+   [PROFILE-AU-CDR]
+              Low, S., "DataRight+: Australian CDR Profile",
+              <https://datarightplus.github.io/datarightplus-cdr-
+              profile/draft-authors-datarightplus-cdr-profile.html>.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+Author's Address
+
+   Stuart Low
+   Biza.io
+   Email: stuart@biza.io
