@@ -92,25 +92,34 @@ Defined within [@!DATARIGHTPLUS-REDOCLY] as `RequestBankingTransactionDetailList
 | `minAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts higher or equal to than this amount                                        |
 | `maxAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts less than or equal to than this amount                                     |
 
+**Note:** For requests related to this specification the Initiator **SHALL NOT** include any other attributes than those documented above.
+
 ## Action Status Metadata
 
 Defined within [@!DATARIGHTPLUS-REDOCLY] as `MetaActionStatusV1` this schema provides a high level status of the action, in this case the Bulk Banking Transaction Detail List request as follows:
 
-| Attribute           | Requirement  | Type          | Description                                                                                                                                                                                           |
-|---------------------|--------------|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `actionId`          | **REQUIRED** | String (UUID) | Globally unique identifier for this action. **MUST** not be reused foID of a specific account to obtain data for. This is a tokenised ID previously obtained from the List Banking Accounts endpoint. |
-| `status`            | **REQUIRED** | String (Enum) | Status of the action based on one of the enumerations described in [Action Statuses](#action-statuses)                                                                                                |
-| `statusDescription` | **REQUIRED** | String        | Extended description of the status containing content at the discretion of the Provider                                                                                                               |
+| Attribute           | Requirement  | Type               | Description                                                                                                                                                                                           |
+|---------------------|--------------|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `actionId`          | **REQUIRED** | String (UUID)      | Globally unique identifier for this action. **MUST** not be reused foID of a specific account to obtain data for. This is a tokenised ID previously obtained from the List Banking Accounts endpoint. |
+| `status`            | **REQUIRED** | String (Enum)      | Status of the action based on one of the enumerations described in [Action Statuses](#action-statuses)                                                                                                |
+| `statusDescription` | **REQUIRED** | String             | Extended description of the status containing content at the discretion of the Provider                                                                                                               |
+| `creationDateTime`  | **REQUIRED** | String (Date-Time) | Date/Time in RFC3339 representing the creation time of the action                                                                                                                                     |
+| `lastUpdated`       | **REQUIRED** | String (Date-Time) | Date/Time in RFC3339 representing the last update time of the action                                                                                                                                  |
+
 
 ### Action Statuses
 
-| Status       | Description                                                                                      |
-|--------------|--------------------------------------------------------------------------------------------------|
-| `PENDING`    | Received but processing has not yet been initiated.                                              |
-| `PROCESSING` | Currently processing and being prepared for download.                                            |
-| `COMPLETE`   | Completed and available for download at the Retrieve Banking Transaction Detail List endpoint.   |
-| `EXPIRED`    | Completed successfully but no longer available for download.                                     |
-| `FAILED`     | Failed to complete successfully, further information may be available within `statusDescription` |
+The following action statuses are recognised within this specification.
+
+| Status       | Description                                                                                    |
+|--------------|------------------------------------------------------------------------------------------------|
+| `INITIALISE` | Initialised but processing has not been started.                                               |
+| `PROCESSING` | Currently processing and being prepared for download.                                          |
+| `COMPLETE`   | Completed and available for download at the Retrieve Banking Transaction Detail List endpoint. |
+| `EXPIRED`    | Completed successfully but no longer available for download.                                   |
+| `FAILED`     | Failed to complete successfully, further information available within `statusDescription`      |
+
+**Note:** For requests related to this specification the Provider **SHALL NOT** include any other statuses other than those documented above.
 
 ## Banking Transaction Detail
 
