@@ -1024,11 +1024,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">DataRight+: Bulk Transaction Detail</td>
-<td class="right">July 2024</td>
+<td class="right">August 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Low</td>
-<td class="center">Expires 22 January 2025</td>
+<td class="center">Expires 8 February 2025</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1041,12 +1041,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-authors-datarightplus-banking-bulk-transactions-v1-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-07-21" class="published">21 July 2024</time>
+<time datetime="2024-08-07" class="published">7 August 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-01-22">22 January 2025</time></dd>
+<dd class="expires"><time datetime="2025-02-08">8 February 2025</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1087,7 +1087,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 22 January 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 8 February 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1381,6 +1381,7 @@ If the action is in <code>EXPIRED</code> or</td>
             </tr>
           </tbody>
         </table>
+<p id="section-5.1-3"><strong>Note:</strong> For requests related to this specification the Initiator <span class="bcp14">SHALL NOT</span> include any other attributes than those documented above.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="action-status-metadata">
@@ -1431,6 +1432,26 @@ If the action is in <code>EXPIRED</code> or</td>
               <td class="text-left" rowspan="1" colspan="1">String</td>
               <td class="text-left" rowspan="1" colspan="1">Extended description of the status containing content at the discretion of the Provider</td>
             </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>creationDateTime</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span class="bcp14">REQUIRED</span>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">String (Date-Time)</td>
+              <td class="text-left" rowspan="1" colspan="1">Date/Time in RFC3339 representing the creation time of the action</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">
+                <code>lastUpdated</code>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">
+                <span class="bcp14">REQUIRED</span>
+</td>
+              <td class="text-left" rowspan="1" colspan="1">String (Date-Time)</td>
+              <td class="text-left" rowspan="1" colspan="1">Date/Time in RFC3339 representing the last update time of the action</td>
+            </tr>
           </tbody>
         </table>
 <div id="action-statuses">
@@ -1438,6 +1459,7 @@ If the action is in <code>EXPIRED</code> or</td>
           <h4 id="name-action-statuses">
 <a href="#section-5.2.1" class="section-number selfRef">5.2.1. </a><a href="#name-action-statuses" class="section-name selfRef">Action Statuses</a>
           </h4>
+<p id="section-5.2.1-1">The following action statuses are recognised within this specification.<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
 <table class="center" id="table-4">
             <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
 <thead>
@@ -1449,9 +1471,9 @@ If the action is in <code>EXPIRED</code> or</td>
             <tbody>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">
-                  <code>PENDING</code>
+                  <code>INITIALISE</code>
 </td>
-                <td class="text-left" rowspan="1" colspan="1">Received but processing has not yet been initiated.</td>
+                <td class="text-left" rowspan="1" colspan="1">Initialised but processing has not been started.</td>
               </tr>
               <tr>
                 <td class="text-left" rowspan="1" colspan="1">
@@ -1475,11 +1497,12 @@ If the action is in <code>EXPIRED</code> or</td>
                 <td class="text-left" rowspan="1" colspan="1">
                   <code>FAILED</code>
 </td>
-                <td class="text-left" rowspan="1" colspan="1">Failed to complete successfully, further information may be available within <code>statusDescription</code>
+                <td class="text-left" rowspan="1" colspan="1">Failed to complete successfully, further information available within <code>statusDescription</code>
 </td>
               </tr>
             </tbody>
           </table>
+<p id="section-5.2.1-3"><strong>Note:</strong> For requests related to this specification the Provider <span class="bcp14">SHALL NOT</span> include any other statuses other than those documented above.<a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

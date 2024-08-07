@@ -4,8 +4,8 @@
 
 datarightplus                                                     S. Low
 Internet-Draft                                                   Biza.io
-Intended status: Experimental                               21 July 2024
-Expires: 22 January 2025
+Intended status: Experimental                              7 August 2024
+Expires: 8 February 2025
 
 
                   DataRight+: Bulk Transaction Detail
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 22 January 2025.
+   This Internet-Draft will expire on 8 February 2025.
 
 Copyright Notice
 
@@ -268,67 +268,88 @@ Table of Contents
 
                                   Table 2
 
+   *Note:* For requests related to this specification the Initiator
+   SHALL NOT include any other attributes than those documented above.
+
 5.2.  Action Status Metadata
 
    Defined within [DATARIGHTPLUS-REDOCLY] as MetaActionStatusV1 this
    schema provides a high level status of the action, in this case the
    Bulk Banking Transaction Detail List request as follows:
 
-   +===================+=============+========+========================+
-   | Attribute         | Requirement | Type   | Description            |
-   +===================+=============+========+========================+
-   | actionId          | REQUIRED    | String | Globally unique        |
-   |                   |             | (UUID) | identifier for this    |
-   |                   |             |        | action.  MUST not      |
-   |                   |             |        | be reused foID of a    |
-   |                   |             |        | specific account to    |
-   |                   |             |        | obtain data for.       |
-   |                   |             |        | This is a tokenised    |
-   |                   |             |        | ID previously          |
-   |                   |             |        | obtained from the      |
-   |                   |             |        | List Banking           |
-   |                   |             |        | Accounts endpoint.     |
-   +-------------------+-------------+--------+------------------------+
-   | status            | REQUIRED    | String | Status of the          |
-   |                   |             | (Enum) | action based on one    |
-   |                   |             |        | of the enumerations    |
-   |                   |             |        | described in Action    |
-   |                   |             |        | Statuses (#action-     |
-   |                   |             |        | statuses)              |
-   +-------------------+-------------+--------+------------------------+
-   | statusDescription | REQUIRED    | String | Extended               |
-   |                   |             |        | description of the     |
-   |                   |             |        | status containing      |
-   |                   |             |        | content at the         |
-   |                   |             |        | discretion of the      |
-   |                   |             |        | Provider               |
-   +-------------------+-------------+--------+------------------------+
+   +===================+===========+=============+=====================+
+   | Attribute         |Requirement| Type        | Description         |
+   +===================+===========+=============+=====================+
+   | actionId          |REQUIRED   | String      | Globally unique     |
+   |                   |           | (UUID)      | identifier for      |
+   |                   |           |             | this action.  MUST  |
+   |                   |           |             | not be reused foID  |
+   |                   |           |             | of a specific       |
+   |                   |           |             | account to obtain   |
+   |                   |           |             | data for.  This is  |
+   |                   |           |             | a tokenised ID      |
+   |                   |           |             | previously          |
+   |                   |           |             | obtained from the   |
+   |                   |           |             | List Banking        |
+   |                   |           |             | Accounts endpoint.  |
+   +-------------------+-----------+-------------+---------------------+
+   | status            |REQUIRED   | String      | Status of the       |
+   |                   |           | (Enum)      | action based on     |
+   |                   |           |             | one of the          |
+   |                   |           |             | enumerations        |
+   |                   |           |             | described in        |
+   |                   |           |             | Action Statuses     |
+   |                   |           |             | (#action-statuses)  |
+   +-------------------+-----------+-------------+---------------------+
+   | statusDescription |REQUIRED   | String      | Extended            |
+   |                   |           |             | description of the  |
+   |                   |           |             | status containing   |
+   |                   |           |             | content at the      |
+   |                   |           |             | discretion of the   |
+   |                   |           |             | Provider            |
+   +-------------------+-----------+-------------+---------------------+
+   | creationDateTime  |REQUIRED   | String      | Date/Time in        |
+   |                   |           | (Date-Time) | RFC3339             |
+   |                   |           |             | representing the    |
+   |                   |           |             | creation time of    |
+   |                   |           |             | the action          |
+   +-------------------+-----------+-------------+---------------------+
+   | lastUpdated       |REQUIRED   | String      | Date/Time in        |
+   |                   |           | (Date-Time) | RFC3339             |
+   |                   |           |             | representing the    |
+   |                   |           |             | last update time    |
+   |                   |           |             | of the action       |
+   +-------------------+-----------+-------------+---------------------+
 
                                   Table 3
 
 5.2.1.  Action Statuses
 
-   +============+======================================================+
-   | Status     | Description                                          |
-   +============+======================================================+
-   | PENDING    | Received but processing has not yet been             |
-   |            | initiated.                                           |
-   +------------+------------------------------------------------------+
-   | PROCESSING | Currently processing and being prepared for          |
-   |            | download.                                            |
-   +------------+------------------------------------------------------+
-   | COMPLETE   | Completed and available for download at the          |
-   |            | Retrieve Banking Transaction Detail List endpoint.   |
-   +------------+------------------------------------------------------+
-   | EXPIRED    | Completed successfully but no longer available for   |
-   |            | download.                                            |
-   +------------+------------------------------------------------------+
-   | FAILED     | Failed to complete successfully, further             |
-   |            | information may be available within                  |
-   |            | statusDescription                                    |
-   +------------+------------------------------------------------------+
+   The following action statuses are recognised within this
+   specification.
+
+    +============+====================================================+
+    | Status     | Description                                        |
+    +============+====================================================+
+    | INITIALISE | Initialised but processing has not been started.   |
+    +------------+----------------------------------------------------+
+    | PROCESSING | Currently processing and being prepared for        |
+    |            | download.                                          |
+    +------------+----------------------------------------------------+
+    | COMPLETE   | Completed and available for download at the        |
+    |            | Retrieve Banking Transaction Detail List endpoint. |
+    +------------+----------------------------------------------------+
+    | EXPIRED    | Completed successfully but no longer available for |
+    |            | download.                                          |
+    +------------+----------------------------------------------------+
+    | FAILED     | Failed to complete successfully, further           |
+    |            | information available within statusDescription     |
+    +------------+----------------------------------------------------+
 
                                   Table 4
+
+   *Note:* For requests related to this specification the Provider SHALL
+   NOT include any other statuses other than those documented above.
 
 5.3.  Banking Transaction Detail
 
