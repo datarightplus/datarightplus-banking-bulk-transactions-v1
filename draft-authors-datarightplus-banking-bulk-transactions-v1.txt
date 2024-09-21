@@ -4,8 +4,8 @@
 
 datarightplus                                                     S. Low
 Internet-Draft                                                   Biza.io
-Intended status: Experimental                              7 August 2024
-Expires: 8 February 2025
+Intended status: Experimental                          21 September 2024
+Expires: 25 March 2025
 
 
                   DataRight+: Bulk Transaction Detail
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 February 2025.
+   This Internet-Draft will expire on 25 March 2025.
 
 Copyright Notice
 
@@ -91,14 +91,14 @@ Table of Contents
 3.  High Level Process
 
    This document, as extended further in OpenAPI format within
-   [DATARIGHTPLUS-REDOCLY], describes the endpoints to deliver the Bulk
-   Banking Transaction Detail capability.  An identified challenge faced
-   by participants within the Australian CDR is a desire of Initiators
-   to obtain Banking Transaction Details for all transactions while
-   balancing the performance constraints of Providers.  On the one hand
-   Initiators are often needing to iterate over lists of transactions to
-   obtain, on an individual basis, transaction details, sometimes
-   hitting the upper bounds of the prescribed Non-Functional
+   [DATARIGHTPLUS-REDOCLY-ID2], describes the endpoints to deliver the
+   Bulk Banking Transaction Detail capability.  An identified challenge
+   faced by participants within the Australian CDR is a desire of
+   Initiators to obtain Banking Transaction Details for all transactions
+   while balancing the performance constraints of Providers.  On the one
+   hand Initiators are often needing to iterate over lists of
+   transactions to obtain, on an individual basis, transaction details,
+   sometimes hitting the upper bounds of the prescribed Non-Functional
    Requirements while on the other hand Providers often must interact
    with many different sources of data to provide all the attributes
    contained within the BankingTransactionDetailV1 schema.
@@ -112,7 +112,7 @@ Table of Contents
        [PROFILE-AU-CDR], [CDS] and [CDR-RULES];
    2.  Initiator obtains a list of banking accounts, using the
        listBankingAccounts operation, as described in
-       [DATARIGHTPLUS-REDOCLY].  Further elaboration regarding this
+       [DATARIGHTPLUS-REDOCLY-ID2].  Further elaboration regarding this
        endpoint is outside the scope of this document;
    3.  Initiator lodges a requestBankingTransactionDetailList request,
        including account identifier and desired filters, from the
@@ -130,8 +130,8 @@ Table of Contents
 
    The Provider SHALL make available, as described further in the
    following subsections and specified in OpenAPI format within
-   [DATARIGHTPLUS-REDOCLY], the following endpoints where the token is
-   granted the bank:transactions:read scope value:
+   [DATARIGHTPLUS-REDOCLY-ID2], the following endpoints where the token
+   is granted the bank:transactions:read scope value:
 
    +==================================+=====+=========================+
    | Resource Server Endpoint         | x-v | Description             |
@@ -204,8 +204,8 @@ Table of Contents
                                  Table 1
 
    Note: Each endpoint supports a number of other error behaviours,
-   these are documented within [DATARIGHTPLUS-REDOCLY] and are intended
-   to align with the behaviours described within [CDS].
+   these are documented within [DATARIGHTPLUS-REDOCLY-ID2] and are
+   intended to align with the behaviours described within [CDS].
 
 5.  Key Schema Definitions
 
@@ -214,7 +214,7 @@ Table of Contents
 
 5.1.  Request Banking Transaction Detail List
 
-   Defined within [DATARIGHTPLUS-REDOCLY] as
+   Defined within [DATARIGHTPLUS-REDOCLY-ID2] as
    RequestBankingTransactionDetailListDataV1 this schema is used to
    provide the request information, is replayed by the Get Banking
    Transaction Detail List Status endpoint, and is intended to be a
@@ -273,9 +273,10 @@ Table of Contents
 
 5.2.  Action Status Metadata
 
-   Defined within [DATARIGHTPLUS-REDOCLY] as MetaActionStatusV1 this
-   schema provides a high level status of the action, in this case the
-   Bulk Banking Transaction Detail List request as follows:
+   Defined within [DATARIGHTPLUS-REDOCLY-ID2] as
+   MetaRequestBankingTransactionDetailListV1 this schema provides a high
+   level status of the action, in this case the Bulk Banking Transaction
+   Detail List request as follows:
 
    +===================+===========+=============+=====================+
    | Attribute         |Requirement| Type        | Description         |
@@ -355,13 +356,19 @@ Table of Contents
 
    The results output by the Retrieve Banking Transaction Detail List
    operation is a list of BankingTransactionDetailV1 as defined within
-   [DATARIGHTPLUS-REDOCLY].
+   [DATARIGHTPLUS-REDOCLY-ID2].
 
 6.  Non-Normative Examples
 
 6.1.  Request Banking Transaction Detail List
 
-   Request POST /actions/bulk-banking-transactions:
+   Request:
+
+   POST /actions/bulk-banking-transactions
+   Host: api.provider.com.au
+   Content-Type: application/json
+   Accept: application/json
+   x-v: V1
 
    {
      "version": "V1",
@@ -372,7 +379,7 @@ Table of Contents
      }
    }
 
-   Response returned as follows:
+   Response:
 
    {
      "version": "V1",
@@ -393,8 +400,14 @@ Table of Contents
 
 6.2.  Get Banking Transaction Detail List Status
 
-   Request GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-
-   b6ed-05c0486db195 with response returned as follows:
+   Request:
+
+GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195
+Host: api.provider.com.au
+Accept: application/json
+x-v: V1
+
+   Response:
 
    {
      "version": "V1",
@@ -415,8 +428,14 @@ Table of Contents
 
 6.3.  Retrieve Banking Transaction Detail List
 
-   Request GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-
-   b6ed-05c0486db195/retrieve with response returned as follows:
+   Request:
+
+GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve
+Host: api.provider.com.au
+Accept: application/json
+x-v: V1
+
+   Response:
 
    {
      "version": "V1",
@@ -493,9 +512,10 @@ Table of Contents
               versioning/draft-authors-datarightplus-enhanced-
               versioning.html>.
 
-   [DATARIGHTPLUS-REDOCLY]
-              Low, S., Kolera, B., and W. Cai, "DataRight+: Redocly",
-              <https://datarightplus.github.io/datarightplus-redocly>.
+   [DATARIGHTPLUS-REDOCLY-ID2]
+              Low, S., Kolera, B., and W. Cai, "DataRight+: Redocly
+              (ID2)", <https://datarightplus.github.io/datarightplus-
+              redocly/?v=ID2>.
 
    [DATARIGHTPLUS-ROSETTA]
               Low, S., "DataRight+ Rosetta Stone",
