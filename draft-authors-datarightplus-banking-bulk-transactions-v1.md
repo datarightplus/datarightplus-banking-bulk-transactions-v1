@@ -45,12 +45,12 @@ This specification uses the terms "Provider" and "Initiator" as defined by [@!DA
 
 # High Level Process
 
-This document, as extended further in OpenAPI format within [@!DATARIGHTPLUS-REDOCLY], describes the endpoints to deliver the Bulk Banking Transaction Detail capability. An identified challenge faced by participants within the Australian CDR is a desire of Initiators to obtain Banking Transaction Details for all transactions while balancing the performance constraints of Providers. On the one hand Initiators are often needing to iterate over lists of transactions to obtain, on an individual basis, transaction details, sometimes hitting the upper bounds of the prescribed Non-Functional Requirements while on the other hand Providers often must interact with many different sources of data to provide all the attributes contained within the `BankingTransactionDetailV1` schema.
+This document, as extended further in OpenAPI format within [@!DATARIGHTPLUS-REDOCLY-ID2], describes the endpoints to deliver the Bulk Banking Transaction Detail capability. An identified challenge faced by participants within the Australian CDR is a desire of Initiators to obtain Banking Transaction Details for all transactions while balancing the performance constraints of Providers. On the one hand Initiators are often needing to iterate over lists of transactions to obtain, on an individual basis, transaction details, sometimes hitting the upper bounds of the prescribed Non-Functional Requirements while on the other hand Providers often must interact with many different sources of data to provide all the attributes contained within the `BankingTransactionDetailV1` schema.
 
 At a high level the process expected to be followed through the implementation of the prescribed endpoints is as follows:
 
 1. Initiator obtains a Consumer approved token, containing the `bank:transaction:read` and `bank:accounts.basic:read` scopes from the Provider through normal processes as prescribed within [@!PROFILE-AU-CDR], [@!CDS] and [@!CDR-RULES];
-2. Initiator obtains a list of banking accounts, using the `listBankingAccounts` operation, as described in [@!DATARIGHTPLUS-REDOCLY]. Further elaboration regarding this endpoint is outside the scope of this document;
+2. Initiator obtains a list of banking accounts, using the `listBankingAccounts` operation, as described in [@!DATARIGHTPLUS-REDOCLY-ID2]. Further elaboration regarding this endpoint is outside the scope of this document;
 3. Initiator lodges a `requestBankingTransactionDetailList` request, including account identifier and desired filters, from the Provider Resource Server;
 4. The Provider responds with metadata including the Action Identifier to be used to address the action by the Initiator;
 5. Periodically the Initiator polls the Provider Resource Server using the `getBankingTransactionDetailListStatus` operation until the status returned indicates readiness;
@@ -58,7 +58,7 @@ At a high level the process expected to be followed through the implementation o
 
 # Provider Resource Server Endpoints
 
-The Provider **SHALL** make available, as described further in the following subsections and specified in OpenAPI format within [@!DATARIGHTPLUS-REDOCLY], the following endpoints where the token is granted the `bank:transactions:read` scope value:
+The Provider **SHALL** make available, as described further in the following subsections and specified in OpenAPI format within [@!DATARIGHTPLUS-REDOCLY-ID2], the following endpoints where the token is granted the `bank:transactions:read` scope value:
 
 | Resource Server Endpoint                                     | `x-v` | Description                                                                                                               |
 |--------------------------------------------------------------|-------|---------------------------------------------------------------------------------------------------------------------------|
@@ -74,7 +74,7 @@ The Provider **SHALL** make available, as described further in the following sub
 |                                                              |       | `FAILED` status returns `urn:au-cds:error:cds-all:Resource/Invalid` error as described in [@!CDS]                         |
 
 
-Note: Each endpoint supports a number of other error behaviours, these are documented within [@!DATARIGHTPLUS-REDOCLY] and are intended to align with the behaviours described within [@!CDS].
+Note: Each endpoint supports a number of other error behaviours, these are documented within [@!DATARIGHTPLUS-REDOCLY-ID2] and are intended to align with the behaviours described within [@!CDS].
 
 # Key Schema Definitions
 
@@ -82,7 +82,7 @@ Key schemas utilised for achieving the defined scope are described as follows.
 
 ## Request Banking Transaction Detail List
 
-Defined within [@!DATARIGHTPLUS-REDOCLY] as `RequestBankingTransactionDetailListDataV1` this schema is used to provide the request information, is replayed by the Get Banking Transaction Detail List Status endpoint, and is intended to be a like-for-like to the input parameters for List Transactions for Banking Account as outlined within [@!CDS].
+Defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `RequestBankingTransactionDetailListDataV1` this schema is used to provide the request information, is replayed by the Get Banking Transaction Detail List Status endpoint, and is intended to be a like-for-like to the input parameters for List Transactions for Banking Account as outlined within [@!CDS].
 
 | Attribute    | Requirement  | Type                  | Description                                                                                                                      |
 |--------------|--------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------------|
@@ -96,7 +96,7 @@ Defined within [@!DATARIGHTPLUS-REDOCLY] as `RequestBankingTransactionDetailList
 
 ## Action Status Metadata
 
-Defined within [@!DATARIGHTPLUS-REDOCLY] as `MetaActionStatusV1` this schema provides a high level status of the action, in this case the Bulk Banking Transaction Detail List request as follows:
+Defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `MetaRequestBankingTransactionDetailListV1` this schema provides a high level status of the action, in this case the Bulk Banking Transaction Detail List request as follows:
 
 | Attribute           | Requirement  | Type               | Description                                                                                                                                                                                           |
 |---------------------|--------------|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -123,14 +123,21 @@ The following action statuses are recognised within this specification.
 
 ## Banking Transaction Detail
 
-The results output by the Retrieve Banking Transaction Detail List operation is a list of `BankingTransactionDetailV1` as defined within [@!DATARIGHTPLUS-REDOCLY].
+The results output by the Retrieve Banking Transaction Detail List operation is a list of `BankingTransactionDetailV1` as defined within [@!DATARIGHTPLUS-REDOCLY-ID2].
 
 # Non-Normative Examples
 
 ## Request Banking Transaction Detail List
 
-Request `POST /actions/bulk-banking-transactions`:
-```json
+Request:
+
+```
+POST /actions/bulk-banking-transactions
+Host: api.provider.com.au
+Content-Type: application/json
+Accept: application/json
+x-v: V1
+
 {
   "version": "V1",
   "data": {
@@ -141,7 +148,8 @@ Request `POST /actions/bulk-banking-transactions`:
 }
 ```
 
-Response returned as follows:
+Response:
+
 ```json
 {
   "version": "V1",
@@ -163,7 +171,16 @@ Response returned as follows:
 
 ## Get Banking Transaction Detail List Status
 
-Request `GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195` with response returned as follows:
+Request:
+
+```
+GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195
+Host: api.provider.com.au
+Accept: application/json
+x-v: V1
+```
+
+Response:
 
 ```json
 {
@@ -186,7 +203,16 @@ Request `GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486d
 
 ## Retrieve Banking Transaction Detail List
 
-Request `GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve` with response returned as follows:
+Request:
+
+```
+GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve
+Host: api.provider.com.au
+Accept: application/json
+x-v: V1
+```
+
+Response:
 
 ```json
 {
@@ -251,7 +277,7 @@ The version negotiation utilised by this specification is outlined within [@!DAT
 
 <reference anchor="DATARIGHTPLUS-ROSETTA" target="https://datarightplus.github.io/datarightplus-rosetta/draft-authors-datarightplus-rosetta.html"> <front><title>DataRight+ Rosetta Stone</title><author initials="S." surname="Low" fullname="Stuart Low"><organization>Biza.io</organization></author></front> </reference>
 
-<reference anchor="DATARIGHTPLUS-REDOCLY" target="https://datarightplus.github.io/datarightplus-redocly"> <front><title>DataRight+: Redocly</title><author initials="S." surname="Low" fullname="Stuart Low"><organization>Biza.io</organization></author><author initials="B." surname="Kolera" fullname="Ben Kolera"><organization>Biza.io</organization></author>
+<reference anchor="DATARIGHTPLUS-REDOCLY-ID2" target="https://datarightplus.github.io/datarightplus-redocly/?v=ID2"> <front><title>DataRight+: Redocly (ID2)</title><author initials="S." surname="Low" fullname="Stuart Low"><organization>Biza.io</organization></author><author initials="B." surname="Kolera" fullname="Ben Kolera"><organization>Biza.io</organization></author>
 <author initials="W." surname="Cai" fullname="Wei Cai"><organization>Biza.io</organization></author></front> </reference>
 
 <reference anchor="DATARIGHTPLUS-DISCOVERY" target="https://datarightplus.github.io/datarightplus-discovery/draft-authors-datarightplus-discovery.html"> <front><title>DataRight+: Discovery</title><author initials="S." surname="Low" fullname="Stuart Low"><organization>Biza.io</organization></author></front> </reference>
