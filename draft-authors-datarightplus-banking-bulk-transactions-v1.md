@@ -132,7 +132,7 @@ The results output by the Retrieve Banking Transaction Detail List operation is 
 Request:
 
 ```
-POST /actions/bulk-banking-transactions
+POST /dio-au/actions/bulk-banking-transactions
 Host: api.provider.com.au
 Content-Type: application/json
 Accept: application/json
@@ -174,7 +174,7 @@ Response:
 Request:
 
 ```
-GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195
+GET /dio-au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195
 Host: api.provider.com.au
 Accept: application/json
 x-v: V1
@@ -206,7 +206,7 @@ Response:
 Request:
 
 ```
-GET /actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve
+GET /dio-au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve
 Host: api.provider.com.au
 Accept: application/json
 x-v: V1
