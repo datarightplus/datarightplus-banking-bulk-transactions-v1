@@ -4,8 +4,8 @@
 
 datarightplus                                                     S. Low
 Internet-Draft                                                   Biza.io
-Intended status: Experimental                          21 September 2024
-Expires: 25 March 2025
+Intended status: Experimental                          27 September 2024
+Expires: 31 March 2025
 
 
                   DataRight+: Bulk Transaction Detail
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 March 2025.
+   This Internet-Draft will expire on 31 March 2025.
 
 Copyright Notice
 
@@ -62,17 +62,20 @@ Table of Contents
    2.  Terms & Definitions
    3.  High Level Process
    4.  Provider Resource Server Endpoints
-   5.  Key Schema Definitions
-     5.1.  Request Banking Transaction Detail List
-     5.2.  Action Status Metadata
-       5.2.1.  Action Statuses
-     5.3.  Banking Transaction Detail
-   6.  Non-Normative Examples
-     6.1.  Request Banking Transaction Detail List
-     6.2.  Get Banking Transaction Detail List Status
-     6.3.  Retrieve Banking Transaction Detail List
-   7.  Implementation Considerations
-   8.  Normative References
+   5.  Request Detail Endpoint
+     5.1.  Request Detail Metadata
+       5.1.1.  Action Statuses
+     5.2.  Request Detail Endpoint Request
+     5.3.  Request Detail Endpoint Successful Response
+   6.  Bulk Transaction Detail Status
+     6.1.  Bulk Transaction Detail Request
+     6.2.  Successful Bulk Transaction Detail Response
+   7.  Retrieve Detail List
+     7.1.  Retrieve Detail Request
+     7.2.  Successful Retrieve Detail Response
+     7.3.  Retrieve Detail Not Ready Error Response
+   8.  Implementation Considerations
+   9.  Normative References
    Author's Address
 
 1.  Scope
@@ -207,19 +210,15 @@ Table of Contents
    these are documented within [DATARIGHTPLUS-REDOCLY-ID2] and are
    intended to align with the behaviours described within [CDS].
 
-5.  Key Schema Definitions
+5.  Request Detail Endpoint
 
-   Key schemas utilised for achieving the defined scope are described as
-   follows.
-
-5.1.  Request Banking Transaction Detail List
-
-   Defined within [DATARIGHTPLUS-REDOCLY-ID2] as
-   RequestBankingTransactionDetailListDataV1 this schema is used to
-   provide the request information, is replayed by the Get Banking
-   Transaction Detail List Status endpoint, and is intended to be a
-   like-for-like to the input parameters for List Transactions for
-   Banking Account as outlined within [CDS].
+   The endpoint for Request Detail Endpoint is advertised according to
+   [DATARIGHTPLUS-DISCOVERY] as the requestBankingTransactionDetailList
+   operation.  A request is made using HTTP POST method containing a
+   JSON encoded payload according to the schema defined within
+   [DATARIGHTPLUS-REDOCLY-ID2] as
+   RequestBankingTransactionDetailListDataV1 and containing the
+   following attributes:
 
    +============+=============+================+=======================+
    | Attribute  | Requirement | Type           | Description           |
@@ -271,28 +270,44 @@ Table of Contents
    *Note:* For requests related to this specification the Initiator
    SHALL NOT include any other attributes than those documented above.
 
-5.2.  Action Status Metadata
+   The Provider responds to this request with a JSON encoded payload
+   according to the schema defined within [DATARIGHTPLUS-REDOCLY-ID2] as
+   ResponseGetBankingTransactionDetailListStatusV1 and containing the
+   following attributes:
+
+   +=========+===========+=========================================+=========================================+
+   |Attribute|Requirement|Type                                     |Description                              |
+   +=========+===========+=========================================+=========================================+
+   |version  |REQUIRED   |String                                   |The version of the payload, currently    |
+   |         |           |                                         |only V1 is supported                     |
+   +---------+-----------+-----------------------------------------+-----------------------------------------+
+   |data     |REQUIRED   |RequestBankingTransactionDetailListDataV1|Contains the original request data       |
+   |         |           |                                         |specified as                             |
+   |         |           |                                         |RequestBankingTransactionDetailListDataV1|
+   +---------+-----------+-----------------------------------------+-----------------------------------------+
+   |links    |REQUIRED   |LinksV1                                  |[CDS] aligned LinksV1 object             |
+   +---------+-----------+-----------------------------------------+-----------------------------------------+
+   |meta     |REQUIRED   |MetaRequestBankingTransactionDetailListV1|Contains the job status information      |
+   |         |           |                                         |described as                             |
+   |         |           |                                         |MetaRequestBankingTransactionDetailListV1|
+   +---------+-----------+-----------------------------------------+-----------------------------------------+
+
+                                  Table 3
+
+5.1.  Request Detail Metadata
 
    Defined within [DATARIGHTPLUS-REDOCLY-ID2] as
    MetaRequestBankingTransactionDetailListV1 this schema provides a high
-   level status of the action, in this case the Bulk Banking Transaction
-   Detail List request as follows:
+   level status of the detail request containing the following
+   attributes:
 
    +===================+===========+=============+=====================+
    | Attribute         |Requirement| Type        | Description         |
    +===================+===========+=============+=====================+
    | actionId          |REQUIRED   | String      | Globally unique     |
-   |                   |           | (UUID)      | identifier for      |
+   |                   |           |             | identifier for      |
    |                   |           |             | this action.  MUST  |
-   |                   |           |             | not be reused foID  |
-   |                   |           |             | of a specific       |
-   |                   |           |             | account to obtain   |
-   |                   |           |             | data for.  This is  |
-   |                   |           |             | a tokenised ID      |
-   |                   |           |             | previously          |
-   |                   |           |             | obtained from the   |
-   |                   |           |             | List Banking        |
-   |                   |           |             | Accounts endpoint.  |
+   |                   |           |             | not be reused.      |
    +-------------------+-----------+-------------+---------------------+
    | status            |REQUIRED   | String      | Status of the       |
    |                   |           | (Enum)      | action based on     |
@@ -322,47 +337,36 @@ Table of Contents
    |                   |           |             | of the action       |
    +-------------------+-----------+-------------+---------------------+
 
-                                  Table 3
-
-5.2.1.  Action Statuses
-
-   The following action statuses are recognised within this
-   specification.
-
-    +============+====================================================+
-    | Status     | Description                                        |
-    +============+====================================================+
-    | INITIALISE | Initialised but processing has not been started.   |
-    +------------+----------------------------------------------------+
-    | PROCESSING | Currently processing and being prepared for        |
-    |            | download.                                          |
-    +------------+----------------------------------------------------+
-    | COMPLETE   | Completed and available for download at the        |
-    |            | Retrieve Banking Transaction Detail List endpoint. |
-    +------------+----------------------------------------------------+
-    | EXPIRED    | Completed successfully but no longer available for |
-    |            | download.                                          |
-    +------------+----------------------------------------------------+
-    | FAILED     | Failed to complete successfully, further           |
-    |            | information available within statusDescription     |
-    +------------+----------------------------------------------------+
-
                                   Table 4
 
-   *Note:* For requests related to this specification the Provider SHALL
-   NOT include any other statuses other than those documented above.
+5.1.1.  Action Statuses
 
-5.3.  Banking Transaction Detail
+   The following status values are defined for this specification.
 
-   The results output by the Retrieve Banking Transaction Detail List
-   operation is a list of BankingTransactionDetailV1 as defined within
-   [DATARIGHTPLUS-REDOCLY-ID2].
+     +============+==================================================+
+     | Status     | Description                                      |
+     +============+==================================================+
+     | INITIALISE | Initialised but processing has not been started. |
+     +------------+--------------------------------------------------+
+     | PROCESSING | Currently processing and being prepared for      |
+     |            | download.                                        |
+     +------------+--------------------------------------------------+
+     | COMPLETE   | Completed and available for download at the      |
+     |            | Retrieve Detail List endpoint.                   |
+     +------------+--------------------------------------------------+
+     | EXPIRED    | Completed successfully but no longer available   |
+     |            | for download.                                    |
+     +------------+--------------------------------------------------+
+     | FAILED     | Failed to complete successfully, further         |
+     |            | information available within statusDescription   |
+     +------------+--------------------------------------------------+
 
-6.  Non-Normative Examples
+                                  Table 5
 
-6.1.  Request Banking Transaction Detail List
+5.2.  Request Detail Endpoint Request
 
-   Request:
+   The following is a non-normative example of a request from the
+   Initiator to the Provider:
 
    POST /dio-au/actions/bulk-banking-transactions
    Host: api.provider.com.au
@@ -379,7 +383,10 @@ Table of Contents
      }
    }
 
-   Response:
+5.3.  Request Detail Endpoint Successful Response
+
+   The following is a non-normative example of a response from the
+   Provider:
 
    {
      "version": "V1",
@@ -398,16 +405,29 @@ Table of Contents
      }
    }
 
-6.2.  Get Banking Transaction Detail List Status
+6.  Bulk Transaction Detail Status
 
-   Request:
+   The endpoint for Bulk Transaction Detail Status is advertised
+   according to [DATARIGHTPLUS-DISCOVERY] as the
+   getBankingTransactionDetailListStatus operation.  A request is made
+   using HTTP GET method and includes the unique actionId returned
+   during the original request and the response matches that of the
+   _Request Detail Endpoint_.
+
+6.1.  Bulk Transaction Detail Request
+
+   The following is a non-normative example of a request from the
+   Initiator to the Provider:
 
 GET /dio-au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195
 Host: api.provider.com.au
 Accept: application/json
 x-v: V1
 
-   Response:
+6.2.  Successful Bulk Transaction Detail Response
+
+   The following is a non-normative example of a response from the
+   Provider:
 
    {
      "version": "V1",
@@ -426,22 +446,61 @@ x-v: V1
      }
    }
 
-6.3.  Retrieve Banking Transaction Detail List
+7.  Retrieve Detail List
 
-   Request:
+   The endpoint for Retrieve Detail List is advertised according to
+   [DATARIGHTPLUS-DISCOVERY] as the retrieveBankingTransactionDetailList
+   operation.  A request is made using HTTP GET method and includes the
+   unique actionId returned during the original request.
+
+   The Provider responds to this request with a JSON encoded payload
+   according to the schema defined within [DATARIGHTPLUS-REDOCLY-ID2] as
+   ResponseRetrieveBankingTransactionDetailListV1 and containing the
+   following attributes:
+
+   +=========+===========+================================+=======================================+
+   |Attribute|Requirement|Type                            |Description                            |
+   +=========+===========+================================+=======================================+
+   |version  |REQUIRED   |String                          |The version of the payload, currently  |
+   |         |           |                                |only V1 is supported                   |
+   +---------+-----------+--------------------------------+---------------------------------------+
+   |data     |REQUIRED   |List(BankingTransactionDetailV1)|Contains an array of                   |
+   |         |           |                                |BankingTransactionDetailV1 objects as  |
+   |         |           |                                |defined in                             |
+   |         |           |                                |[DATARIGHTPLUS-RESOURCE-SET-BANKING-00]|
+   +---------+-----------+--------------------------------+---------------------------------------+
+   |links    |REQUIRED   |LinksV1                         |[CDS] aligned LinksV1 object           |
+   +---------+-----------+--------------------------------+---------------------------------------+
+   |meta     |REQUIRED   |MetaPaginatedV1                 |[CDS] aligned MetaPaginatedV1 object   |
+   +---------+-----------+--------------------------------+---------------------------------------+
+
+                                  Table 6
+
+   The payload provided, if ready, MUST be a single page of unlimited
+   records.  If the result payload is not available the Provider MUST
+   respond with a HTTP Code 404 containing an error payload matching the
+   urn:au-cds:error:cds-all:Resource/Unavailable error code.
+
+7.1.  Retrieve Detail Request
+
+   The following is a non-normative example of a request from the
+   Initiator to the Provider:
 
 GET /dio-au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve
 Host: api.provider.com.au
 Accept: application/json
 x-v: V1
 
-   Response:
+7.2.  Successful Retrieve Detail Response
+
+   The following is a non-normative example of a response from the
+   Provider:
 
    {
      "version": "V1",
      "data": [
        {
-         "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+         "accountId": "jdnmwucgrchzngrqieryhiovpvzknokkwsediggdlnxgxizegvwpwfflgavkrbay",
          "amount": "133.55",
          "apcaNumber": "484799",
          "billerCode": "75556",
@@ -476,20 +535,48 @@ x-v: V1
        "self": "https://api.provider.com.au/dio-au/v1/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve"
      },
      "meta": {
-       "actionId": "9fe3f97e-c22c-4516-b6ed-05c0486db195",
-       "status": "COMPLETE",
-       "statusDescription": "Job complete, ready for download."
+       "totalPages": 1,
+       "totalRecords": 9918
      }
    }
 
-7.  Implementation Considerations
+7.3.  Retrieve Detail Not Ready Error Response
+
+   The following is a non-normative example of an error response from
+   the Provider when the detail is not yet ready for download:
+
+   {
+     "errors": [
+       {
+         "code": "urn:au-cds:error:cds-all:Resource/Unavailable",
+         "title": "Unavailable Resource",
+         "detail": "The requested resource identifier not currently available.",
+         "meta": {}
+       }
+     ]
+   }
+
+8.  Implementation Considerations
 
    The availability of this functionality is expected to be discovered
    using the specification outlined in [DATARIGHTPLUS-DISCOVERY].  The
    version negotiation utilised by this specification is outlined within
    [DATARIGHTPLUS-ENHANCED-VERSIONING].
 
-8.  Normative References
+   RequestBankingTransactionDetailListDataV1 is intended to be a like-
+   for-like to the input parameters for List Transactions for Banking
+   Account as outlined within [CDS].
+
+   While it is not explicitly specified within the API documentation the
+   assigned actionId SHOULD be no more than 512 characters.
+
+   Some implementations MAY encounter hard limits with respect to
+   maximum response size, for instance AWS infrastructure is known to be
+   limited to 10MB.  The behaviour of the Provider in this situation is
+   not currently defined but various error codes exist within the
+   OpenAPI specification which MAY be useful.
+
+9.  Normative References
 
    [CDR-RULES]
               Department of the Treasury, "Competition and Consumer
@@ -516,6 +603,13 @@ x-v: V1
               Low, S., Kolera, B., and W. Cai, "DataRight+: Redocly
               (ID2)", <https://datarightplus.github.io/datarightplus-
               redocly/?v=ID2>.
+
+   [DATARIGHTPLUS-RESOURCE-SET-BANKING-00]
+              Low, S., "DataRight+: Banking Resource Set",
+              <https://datarightplus.github.io/datarightplus-resource-
+              set-banking/draft-authors-datarightplus-resource-set-
+              banking-00/draft-authors-datarightplus-resource-set-
+              banking.html>.
 
    [DATARIGHTPLUS-ROSETTA]
               Low, S., "DataRight+ Rosetta Stone",
