@@ -4,8 +4,8 @@
 
 datarightplus                                                     S. Low
 Internet-Draft                                                   Biza.io
-Intended status: Experimental                          27 September 2024
-Expires: 31 March 2025
+Intended status: Experimental                             2 October 2024
+Expires: 5 April 2025
 
 
                   DataRight+: Bulk Transaction Detail
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 March 2025.
+   This Internet-Draft will expire on 5 April 2025.
 
 Copyright Notice
 
@@ -220,50 +220,56 @@ Table of Contents
    RequestBankingTransactionDetailListDataV1 and containing the
    following attributes:
 
-   +============+=============+================+=======================+
-   | Attribute  | Requirement | Type           | Description           |
-   +============+=============+================+=======================+
-   | accountId  | REQUIRED    | String         | ID of a specific      |
-   |            |             |                | account to obtain     |
-   |            |             |                | data for.  This is    |
-   |            |             |                | a tokenised ID        |
-   |            |             |                | previously            |
-   |            |             |                | obtained from the     |
-   |            |             |                | List Banking          |
-   |            |             |                | Accounts endpoint.    |
-   +------------+-------------+----------------+-----------------------+
-   | oldestDate | REQUIRED    | String         | Constrain the         |
-   |            |             | (DateString)   | request to records    |
-   |            |             |                | with effective        |
-   |            |             |                | date at or after      |
-   |            |             |                | this date.  Format    |
-   |            |             |                | is aligned to         |
-   |            |             |                | DateString common     |
-   |            |             |                | type                  |
-   +------------+-------------+----------------+-----------------------+
-   | newestDate | REQUIRED    | String         | Constrain the         |
-   |            |             | (DateString)   | request to records    |
-   |            |             |                | with effective        |
-   |            |             |                | date at or before     |
-   |            |             |                | this date.  Format    |
-   |            |             |                | is aligned to         |
-   |            |             |                | DateString common     |
-   |            |             |                | type                  |
-   +------------+-------------+----------------+-----------------------+
-   | minAmount  | OPTIONAL    | String         | Filter                |
-   |            |             | (AmountString) | transactions to       |
-   |            |             |                | only transactions     |
-   |            |             |                | with amounts          |
-   |            |             |                | higher or equal to    |
-   |            |             |                | than this amount      |
-   +------------+-------------+----------------+-----------------------+
-   | maxAmount  | OPTIONAL    | String         | Filter                |
-   |            |             | (AmountString) | transactions to       |
-   |            |             |                | only transactions     |
-   |            |             |                | with amounts less     |
-   |            |             |                | than or equal to      |
-   |            |             |                | than this amount      |
-   +------------+-------------+----------------+-----------------------+
+    +============+=============+==================+===================+
+    | Attribute  | Requirement | Type             | Description       |
+    +============+=============+==================+===================+
+    | accountId  | REQUIRED    | String           | ID of a specific  |
+    |            |             |                  | account to obtain |
+    |            |             |                  | data for.  This   |
+    |            |             |                  | is a tokenised ID |
+    |            |             |                  | previously        |
+    |            |             |                  | obtained from the |
+    |            |             |                  | List Banking      |
+    |            |             |                  | Accounts          |
+    |            |             |                  | endpoint.         |
+    +------------+-------------+------------------+-------------------+
+    | oldestTime | REQUIRED    | String           | Constrain the     |
+    |            |             | (DateTimeString) | transaction       |
+    |            |             |                  | history request   |
+    |            |             |                  | to transactions   |
+    |            |             |                  | with effective    |
+    |            |             |                  | time at or after  |
+    |            |             |                  | this date/time.   |
+    |            |             |                  | Format is aligned |
+    |            |             |                  | to DateTimeString |
+    |            |             |                  | common type.      |
+    +------------+-------------+------------------+-------------------+
+    | newestTime | REQUIRED    | String           | Constrain the     |
+    |            |             | (DateTimeString) | transaction       |
+    |            |             |                  | history request   |
+    |            |             |                  | to transactions   |
+    |            |             |                  | with effective    |
+    |            |             |                  | time at or before |
+    |            |             |                  | this date/time.   |
+    |            |             |                  | Format is aligned |
+    |            |             |                  | to DateTimeString |
+    |            |             |                  | common type.      |
+    +------------+-------------+------------------+-------------------+
+    | minAmount  | OPTIONAL    | String           | Filter            |
+    |            |             | (AmountString)   | transactions to   |
+    |            |             |                  | only transactions |
+    |            |             |                  | with amounts      |
+    |            |             |                  | higher or equal   |
+    |            |             |                  | to than this      |
+    |            |             |                  | amount            |
+    +------------+-------------+------------------+-------------------+
+    | maxAmount  | OPTIONAL    | String           | Filter            |
+    |            |             | (AmountString)   | transactions to   |
+    |            |             |                  | only transactions |
+    |            |             |                  | with amounts less |
+    |            |             |                  | than or equal to  |
+    |            |             |                  | than this amount  |
+    +------------+-------------+------------------+-------------------+
 
                                   Table 2
 
@@ -378,8 +384,8 @@ Table of Contents
      "version": "V1",
      "data": {
        "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
-       "oldestDate": "2022-07-01",
-       "newestDate": "2024-06-30"
+       "oldestTime": "2022-07-01T15:43:00.123456Z",
+       "newestTime": "2024-06-30T19:20:30.123456Z"
      }
    }
 
@@ -392,8 +398,8 @@ Table of Contents
      "version": "V1",
      "data": {
        "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
-       "oldestDate": "2022-07-01",
-       "newestDate": "2024-06-30"
+       "oldestTime": "2022-07-01T15:43:00.123456Z",
+       "newestTime": "2024-06-30T19:20:30.123456Z"
      },
      "links": {
        "self": "https://api.provider.com.au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
@@ -433,8 +439,8 @@ x-v: V1
      "version": "V1",
      "data": {
        "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
-       "oldestDate": "2022-07-01",
-       "newestDate": "2024-06-30"
+       "oldestTime": "2022-07-01T15:43:00.123456Z",
+       "newestTime": "2024-06-30T19:20:30.123456Z"
      },
      "links": {
        "self": "https://api.provider.com.au/dio-au/v1/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
