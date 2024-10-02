@@ -81,13 +81,13 @@ Note: Each endpoint supports a number of other error behaviours, these are docum
 
 The endpoint for Request Detail Endpoint is advertised according to [@!DATARIGHTPLUS-DISCOVERY] as the `requestBankingTransactionDetailList` operation. A request is made using HTTP `POST` method containing a JSON encoded payload according to the schema defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `RequestBankingTransactionDetailListDataV1` and containing the following attributes:
 
-| Attribute    | Requirement  | Type                  | Description                                                                                                                      |
-|--------------|--------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `accountId`  | **REQUIRED** | String                | ID of a specific account to obtain data for. This is a tokenised ID previously obtained from the List Banking Accounts endpoint. |
-| `oldestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or after this date. Format is aligned to DateString common type          |
-| `newestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or before this date. Format is aligned to DateString common type         |
-| `minAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts higher or equal to than this amount                                        |
-| `maxAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts less than or equal to than this amount                                     |
+| Attribute    | Requirement  | Type                    | Description                                                                                                                                                 |
+|--------------|--------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `accountId`  | **REQUIRED** | String                  | ID of a specific account to obtain data for. This is a tokenised ID previously obtained from the List Banking Accounts endpoint.                            |
+| `oldestTime` | **REQUIRED** | String (DateTimeString) | Constrain the transaction history request to transactions with effective time at or after this date/time. Format is aligned to DateTimeString common type.  |
+| `newestTime` | **REQUIRED** | String (DateTimeString) | Constrain the transaction history request to transactions with effective time at or before this date/time. Format is aligned to DateTimeString common type. |
+| `minAmount`  | **OPTIONAL** | String (AmountString)   | Filter transactions to only transactions with amounts higher or equal to than this amount                                                                   |
+| `maxAmount`  | **OPTIONAL** | String (AmountString)   | Filter transactions to only transactions with amounts less than or equal to than this amount                                                                |
 
 **Note:** For requests related to this specification the Initiator **SHALL NOT** include any other attributes than those documented above.
 
@@ -96,7 +96,7 @@ The Provider responds to this request with a JSON encoded payload according to t
 | Attribute | Requirement  | Type                                        | Description                                                                                  |
 |-----------|--------------|---------------------------------------------|----------------------------------------------------------------------------------------------|
 | `version` | **REQUIRED** | String                                      | The version of the payload, currently only `V1` is supported                                 |
-| `data`    | **REQUIRED** | `RequestBankingTransactionDetailListDataV1`                                      | Contains the original request data specified as `RequestBankingTransactionDetailListDataV1`  |
+| `data`    | **REQUIRED** | `RequestBankingTransactionDetailListDataV1` | Contains the original request data specified as `RequestBankingTransactionDetailListDataV1`  |
 | `links`   | **REQUIRED** | `LinksV1`                                   | [@!CDS] aligned `LinksV1` object                                                             |
 | `meta`    | **REQUIRED** | `MetaRequestBankingTransactionDetailListV1` | Contains the job status information described as `MetaRequestBankingTransactionDetailListV1` |
 
@@ -141,8 +141,8 @@ x-v: V1
   "version": "V1",
   "data": {
     "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
-    "oldestDate": "2022-07-01",
-    "newestDate": "2024-06-30"
+    "oldestTime": "2022-07-01T15:43:00.123456Z",
+    "newestTime": "2024-06-30T19:20:30.123456Z"
   }
 }
 ```
@@ -156,8 +156,8 @@ The following is a non-normative example of a response from the Provider:
   "version": "V1",
   "data": {
     "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
-    "oldestDate": "2022-07-01",
-    "newestDate": "2024-06-30"
+    "oldestTime": "2022-07-01T15:43:00.123456Z",
+    "newestTime": "2024-06-30T19:20:30.123456Z"
   },
   "links": {
     "self": "https://api.provider.com.au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
@@ -195,8 +195,8 @@ The following is a non-normative example of a response from the Provider:
   "version": "V1",
   "data": {
     "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
-    "oldestDate": "2022-07-01",
-    "newestDate": "2024-06-30"
+    "oldestTime": "2022-07-01T15:43:00.123456Z",
+    "newestTime": "2024-06-30T19:20:30.123456Z"
   },
   "links": {
     "self": "https://api.provider.com.au/dio-au/v1/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
@@ -331,4 +331,3 @@ Some implementations **MAY** encounter hard limits with respect to maximum respo
 
 
 <reference anchor="DATARIGHTPLUS-RESOURCE-SET-BANKING-00" target="https://datarightplus.github.io/datarightplus-resource-set-banking/draft-authors-datarightplus-resource-set-banking-00/draft-authors-datarightplus-resource-set-banking.html"> <front><title>DataRight+: Banking Resource Set</title><author initials="S." surname="Low" fullname="Stuart Low"><organization>Biza.io</organization></author></front> </reference>
-
