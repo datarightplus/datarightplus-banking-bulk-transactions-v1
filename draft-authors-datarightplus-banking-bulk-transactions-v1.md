@@ -76,60 +76,61 @@ The Provider **SHALL** make available, as described further in the following sub
 
 Note: Each endpoint supports a number of other error behaviours, these are documented within [@!DATARIGHTPLUS-REDOCLY-ID2] and are intended to align with the behaviours described within [@!CDS].
 
-# Key Schema Definitions
 
-Key schemas utilised for achieving the defined scope are described as follows.
+# Request Detail Endpoint
 
-## Request Banking Transaction Detail List
+The endpoint for Request Detail Endpoint is advertised according to [@!DATARIGHTPLUS-DISCOVERY] as the `requestBankingTransactionDetailList` operation. A request is made using HTTP `POST` method containing a JSON encoded payload according to the schema defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `RequestBankingTransactionDetailListDataV1` and containing the following attributes:
 
 Defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `RequestBankingTransactionDetailListDataV1` this schema is used to provide the request information, is replayed by the Get Banking Transaction Detail List Status endpoint, and is intended to be a like-for-like to the input parameters for List Transactions for Banking Account as outlined within [@!CDS].
 
-| Attribute    | Requirement  | Type                  | Description                                                                                                                       |
-|--------------|--------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| `accountIds` | **OPTIONAL** | List (String)         | A list of `accountId` obtained from the List Banking Accounts endpoint. If not present all accounts in an agreement are included. |
-| `oldestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or after this date. Format is aligned to DateString common type           |
-| `newestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or before this date. Format is aligned to DateString common type          |
-| `minAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts higher or equal to than this amount                                         |
-| `maxAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts less than or equal to than this amount                                      |
+| Attribute    | Requirement  | Type                    | Description                                                                                                                                                 |
+|--------------|--------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `accountIds` | **OPTIONAL** | List (String)           | A list of `accountId` obtained from the List Banking Accounts endpoint. If not present all accounts in an agreement are included.                           |
+| `oldestTime` | **REQUIRED** | String (DateTimeString) | Constrain the transaction history request to transactions with effective time at or after this date/time. Format is aligned to DateTimeString common type.  |
+| `newestTime` | **REQUIRED** | String (DateTimeString) | Constrain the transaction history request to transactions with effective time at or before this date/time. Format is aligned to DateTimeString common type. |
+| `minAmount`  | **OPTIONAL** | String (AmountString)   | Filter transactions to only transactions with amounts higher or equal to than this amount                                                                   |
+| `maxAmount`  | **OPTIONAL** | String (AmountString)   | Filter transactions to only transactions with amounts less than or equal to than this amount                                                                |
 
 **Note:** For requests related to this specification the Initiator **SHALL NOT** include any other attributes than those documented above.
 
-## Action Status Metadata
+The Provider responds to this request with a JSON encoded payload according to the schema defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `ResponseGetBankingTransactionDetailListStatusV1` and containing the following attributes:
 
-Defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `MetaRequestBankingTransactionDetailListV1` this schema provides a high level status of the action, in this case the Bulk Banking Transaction Detail List request as follows:
+| Attribute | Requirement  | Type                                        | Description                                                                                  |
+|-----------|--------------|---------------------------------------------|----------------------------------------------------------------------------------------------|
+| `version` | **REQUIRED** | String                                      | The version of the payload, currently only `V1` is supported                                 |
+| `data`    | **REQUIRED** | `RequestBankingTransactionDetailListDataV1` | Contains the original request data specified as `RequestBankingTransactionDetailListDataV1`  |
+| `links`   | **REQUIRED** | `LinksV1`                                   | [@!CDS] aligned `LinksV1` object                                                             |
+| `meta`    | **REQUIRED** | `MetaRequestBankingTransactionDetailListV1` | Contains the job status information described as `MetaRequestBankingTransactionDetailListV1` |
 
-| Attribute           | Requirement  | Type               | Description                                                                                                                                                                                           |
-|---------------------|--------------|--------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `actionId`          | **REQUIRED** | String (UUID)      | Globally unique identifier for this action. **MUST** not be reused foID of a specific account to obtain data for. This is a tokenised ID previously obtained from the List Banking Accounts endpoint. |
-| `status`            | **REQUIRED** | String (Enum)      | Status of the action based on one of the enumerations described in [Action Statuses](#action-statuses)                                                                                                |
-| `statusDescription` | **REQUIRED** | String             | Extended description of the status containing content at the discretion of the Provider                                                                                                               |
-| `creationDateTime`  | **REQUIRED** | String (Date-Time) | Date/Time in RFC3339 representing the creation time of the action                                                                                                                                     |
-| `lastUpdated`       | **REQUIRED** | String (Date-Time) | Date/Time in RFC3339 representing the last update time of the action                                                                                                                                  |
+## Request Detail Metadata
 
+Defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `MetaRequestBankingTransactionDetailListV1` this schema provides a high level status of the detail request containing the following attributes:
+
+| Attribute           | Requirement  | Type               | Description                                                                                            |
+|---------------------|--------------|--------------------|--------------------------------------------------------------------------------------------------------|
+| `actionId`          | **REQUIRED** | String             | Globally unique identifier for this action. **MUST** not be reused.                                    |
+| `status`            | **REQUIRED** | String (Enum)      | Status of the action based on one of the enumerations described in [Action Statuses](#action-statuses) |
+| `statusDescription` | **REQUIRED** | String             | Extended description of the status containing content at the discretion of the Provider                |
+| `creationDateTime`  | **REQUIRED** | String (Date-Time) | Date/Time in RFC3339 representing the creation time of the action                                      |
+| `lastUpdated`       | **REQUIRED** | String (Date-Time) | Date/Time in RFC3339 representing the last update time of the action                                   |
 
 ### Action Statuses
 
-The following action statuses are recognised within this specification.
+The following `status` values are defined for this specification.
 
-| Status       | Description                                                                                    |
-|--------------|------------------------------------------------------------------------------------------------|
-| `INITIALISE` | Initialised but processing has not been started.                                               |
-| `PROCESSING` | Currently processing and being prepared for download.                                          |
-| `COMPLETE`   | Completed and available for download at the Retrieve Banking Transaction Detail List endpoint. |
-| `EXPIRED`    | Completed successfully but no longer available for download.                                   |
-| `FAILED`     | Failed to complete successfully, further information available within `statusDescription`      |
+| Status       | Description                                                                               |
+|--------------|-------------------------------------------------------------------------------------------|
+| `INITIALISE` | Initialised but processing has not been started.                                          |
+| `PROCESSING` | Currently processing and being prepared for download.                                     |
+| `COMPLETE`   | Completed and available for download at the Retrieve Detail List endpoint.                |
+| `EXPIRED`    | Completed successfully but no longer available for download.                              |
+| `FAILED`     | Failed to complete successfully, further information available within `statusDescription` |
 
-**Note:** For requests related to this specification the Provider **SHALL NOT** include any other statuses other than those documented above.
 
-## Banking Transaction Detail
 
-The results output by the Retrieve Banking Transaction Detail List operation is a list of `BankingTransactionDetailV1` as defined within [@!DATARIGHTPLUS-REDOCLY-ID2].
+## Request Detail Endpoint Request
 
-# Non-Normative Examples
-
-## Request Banking Transaction Detail List
-
-Request:
+The following is a non-normative example of a request from the Initiator to the Provider:
 
 ```
 POST /dio-au/actions/bulk-banking-transactions
@@ -145,13 +146,15 @@ x-v: V1
       "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
       "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
     ],
-    "oldestDate": "2022-07-01",
-    "newestDate": "2024-06-30"
+    "oldestTime": "2022-07-01T15:43:00.123456Z",
+    "newestTime": "2024-06-30T19:20:30.123456Z"
   }
 }
 ```
 
-Response:
+## Request Detail Endpoint Successful Response
+
+The following is a non-normative example of a response from the Provider:
 
 ```json
 {
@@ -161,8 +164,8 @@ Response:
       "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
       "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
     ],
-    "oldestDate": "2022-07-01",
-    "newestDate": "2024-06-30"
+    "oldestTime": "2022-07-01T15:43:00.123456Z",
+    "newestTime": "2024-06-30T19:20:30.123456Z"
   },
   "links": {
     "self": "https://api.provider.com.au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
@@ -175,9 +178,14 @@ Response:
 }
 ```
 
-## Get Banking Transaction Detail List Status
+# Bulk Transaction Detail Status
 
-Request:
+The endpoint for Bulk Transaction Detail Status is advertised according to [@!DATARIGHTPLUS-DISCOVERY] as the `getBankingTransactionDetailListStatus` operation. A request is made using HTTP `GET` method and includes the unique `actionId` returned during the original request and the response matches that of the _Request Detail Endpoint_.
+
+
+## Bulk Transaction Detail Request
+
+The following is a non-normative example of a request from the Initiator to the Provider:
 
 ```
 GET /dio-au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195
@@ -186,7 +194,9 @@ Accept: application/json
 x-v: V1
 ```
 
-Response:
+## Successful Bulk Transaction Detail Response
+
+The following is a non-normative example of a response from the Provider:
 
 ```json
 {
@@ -196,8 +206,8 @@ Response:
       "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
       "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
     ],
-    "oldestDate": "2022-07-01",
-    "newestDate": "2024-06-30"
+    "oldestTime": "2022-07-01T15:43:00.123456Z",
+    "newestTime": "2024-06-30T19:20:30.123456Z"
   },
   "links": {
     "self": "https://api.provider.com.au/dio-au/v1/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195"
@@ -210,9 +220,23 @@ Response:
 }
 ```
 
-## Retrieve Banking Transaction Detail List
+# Retrieve Detail List
 
-Request:
+The endpoint for Retrieve Detail List is advertised according to [@!DATARIGHTPLUS-DISCOVERY] as the `retrieveBankingTransactionDetailList` operation. A request is made using HTTP `GET` method and includes the unique `actionId` returned during the original request.
+
+The Provider responds to this request with a JSON encoded payload according to the schema defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `ResponseRetrieveBankingTransactionDetailListV1` and containing the following attributes:
+
+| Attribute | Requirement  | Type                               | Description                                                                                                       |
+|-----------|--------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| `version` | **REQUIRED** | String                             | The version of the payload, currently only `V1` is supported                                                      |
+| `data`    | **REQUIRED** | List(`BankingTransactionDetailV1`) | Contains an array of `BankingTransactionDetailV1` objects as defined in [@!DATARIGHTPLUS-RESOURCE-SET-BANKING-00] |
+| `links`   | **REQUIRED** | `LinksV1`                          | [@!CDS] aligned `LinksV1` object                                                                                  |
+| `meta`    | **REQUIRED** | `MetaPaginatedV1`                  | [@!CDS] aligned `MetaPaginatedV1` object                                                                          |
+The payload provided, if ready, **MUST** be a single page of unlimited records. If the result payload is not available the Provider **MUST** respond with a HTTP Code 404 containing an error payload matching the `urn:au-cds:error:cds-all:Resource/Unavailable` error code.
+
+## Retrieve Detail Request
+
+The following is a non-normative example of a request from the Initiator to the Provider:
 
 ```
 GET /dio-au/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve
@@ -221,7 +245,9 @@ Accept: application/json
 x-v: V1
 ```
 
-Response:
+## Successful Retrieve Detail Response
+
+The following is a non-normative example of a response from the Provider:
 
 ```json
 {
@@ -263,10 +289,26 @@ Response:
     "self": "https://api.provider.com.au/dio-au/v1/actions/bulk-banking-transactions/9fe3f97e-c22c-4516-b6ed-05c0486db195/retrieve"
   },
   "meta": {
-    "actionId": "9fe3f97e-c22c-4516-b6ed-05c0486db195",
-    "status": "COMPLETE",
-    "statusDescription": "Job complete, ready for download."
+    "totalPages": 1,
+    "totalRecords": 9918
   }
+}
+```
+
+## Retrieve Detail Not Ready Error Response
+
+The following is a non-normative example of an error response from the Provider when the detail is not yet ready for download:
+
+```json
+{
+  "errors": [
+    {
+      "code": "urn:au-cds:error:cds-all:Resource/Unavailable",
+      "title": "Unavailable Resource",
+      "detail": "The requested resource identifier not currently available.",
+      "meta": {}
+    }
+  ]
 }
 ```
 
@@ -275,6 +317,11 @@ Response:
 The availability of this functionality is expected to be discovered using the specification outlined in [@!DATARIGHTPLUS-DISCOVERY].
 The version negotiation utilised by this specification is outlined within [@!DATARIGHTPLUS-ENHANCED-VERSIONING].
 
+`RequestBankingTransactionDetailListDataV1` is intended to be a like-for-like to the input parameters for List Transactions for Banking Account as outlined within [@!CDS].
+
+While it is not explicitly specified within the API documentation the assigned `actionId` **SHOULD** be no more than 512 characters.
+
+Some implementations **MAY** encounter hard limits with respect to maximum response size, for instance AWS infrastructure is known to be limited to 10MB. The behaviour of the Provider in this situation is not currently defined but various error codes exist within the OpenAPI specification which **MAY** be useful.
 
 {backmatter}
 
@@ -293,3 +340,5 @@ The version negotiation utilised by this specification is outlined within [@!DAT
 
 <reference anchor="DATARIGHTPLUS-ENHANCED-VERSIONING" target="https://datarightplus.github.io/datarightplus-enhanced-versioning/draft-authors-datarightplus-enhanced-versioning.html"> <front><title>DataRight+: Enhanced Endpoint Versioning</title><author initials="S." surname="Low" fullname="Stuart Low"><organization>Biza.io</organization></author></front> </reference>
 
+
+<reference anchor="DATARIGHTPLUS-RESOURCE-SET-BANKING-00" target="https://datarightplus.github.io/datarightplus-resource-set-banking/draft-authors-datarightplus-resource-set-banking-00/draft-authors-datarightplus-resource-set-banking.html"> <front><title>DataRight+: Banking Resource Set</title><author initials="S." surname="Low" fullname="Stuart Low"><organization>Biza.io</organization></author></front> </reference>
