@@ -84,13 +84,13 @@ Key schemas utilised for achieving the defined scope are described as follows.
 
 Defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `RequestBankingTransactionDetailListDataV1` this schema is used to provide the request information, is replayed by the Get Banking Transaction Detail List Status endpoint, and is intended to be a like-for-like to the input parameters for List Transactions for Banking Account as outlined within [@!CDS].
 
-| Attribute    | Requirement  | Type                  | Description                                                                                                                      |
-|--------------|--------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `accountId`  | **REQUIRED** | String                | ID of a specific account to obtain data for. This is a tokenised ID previously obtained from the List Banking Accounts endpoint. |
-| `oldestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or after this date. Format is aligned to DateString common type          |
-| `newestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or before this date. Format is aligned to DateString common type         |
-| `minAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts higher or equal to than this amount                                        |
-| `maxAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts less than or equal to than this amount                                     |
+| Attribute    | Requirement  | Type                  | Description                                                                                                                       |
+|--------------|--------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|
+| `accountIds` | **OPTIONAL** | List (String)         | A list of `accountId` obtained from the List Banking Accounts endpoint. If not present all accounts in an agreement are included. |
+| `oldestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or after this date. Format is aligned to DateString common type           |
+| `newestDate` | **REQUIRED** | String (DateString)   | Constrain the request to records with effective date at or before this date. Format is aligned to DateString common type          |
+| `minAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts higher or equal to than this amount                                         |
+| `maxAmount`  | **OPTIONAL** | String (AmountString) | Filter transactions to only transactions with amounts less than or equal to than this amount                                      |
 
 **Note:** For requests related to this specification the Initiator **SHALL NOT** include any other attributes than those documented above.
 
@@ -141,7 +141,10 @@ x-v: V1
 {
   "version": "V1",
   "data": {
-    "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+    "accountIds": [
+      "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+      "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+    ],
     "oldestDate": "2022-07-01",
     "newestDate": "2024-06-30"
   }
@@ -154,7 +157,10 @@ Response:
 {
   "version": "V1",
   "data": {
-    "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+    "accountIds": [
+      "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+      "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+    ],
     "oldestDate": "2022-07-01",
     "newestDate": "2024-06-30"
   },
@@ -186,7 +192,10 @@ Response:
 {
   "version": "V1",
   "data": {
-    "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+    "accountIds": [
+      "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+      "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+    ],
     "oldestDate": "2022-07-01",
     "newestDate": "2024-06-30"
   },
@@ -219,7 +228,7 @@ Response:
   "version": "V1",
   "data": [
     {
-      "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+      "accountId": "67d542f5-e0ec-4df5-821e-4dbf02c4403f",
       "amount": "133.55",
       "apcaNumber": "484799",
       "billerCode": "75556",
