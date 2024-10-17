@@ -81,9 +81,11 @@ Note: Each endpoint supports a number of other error behaviours, these are docum
 
 The endpoint for Request Detail Endpoint is advertised according to [@!DATARIGHTPLUS-DISCOVERY] as the `requestBankingTransactionDetailList` operation. A request is made using HTTP `POST` method containing a JSON encoded payload according to the schema defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `RequestBankingTransactionDetailListDataV1` and containing the following attributes:
 
+Defined within [@!DATARIGHTPLUS-REDOCLY-ID2] as `RequestBankingTransactionDetailListDataV1` this schema is used to provide the request information, is replayed by the Get Banking Transaction Detail List Status endpoint, and is intended to be a like-for-like to the input parameters for List Transactions for Banking Account as outlined within [@!CDS].
+
 | Attribute    | Requirement  | Type                    | Description                                                                                                                                                 |
 |--------------|--------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `accountId`  | **REQUIRED** | String                  | ID of a specific account to obtain data for. This is a tokenised ID previously obtained from the List Banking Accounts endpoint.                            |
+| `accountIds` | **OPTIONAL** | List (String)           | A list of `accountId` obtained from the List Banking Accounts endpoint. If not present all accounts in an agreement are included.                           |
 | `oldestTime` | **REQUIRED** | String (DateTimeString) | Constrain the transaction history request to transactions with effective time at or after this date/time. Format is aligned to DateTimeString common type.  |
 | `newestTime` | **REQUIRED** | String (DateTimeString) | Constrain the transaction history request to transactions with effective time at or before this date/time. Format is aligned to DateTimeString common type. |
 | `minAmount`  | **OPTIONAL** | String (AmountString)   | Filter transactions to only transactions with amounts higher or equal to than this amount                                                                   |
@@ -140,7 +142,10 @@ x-v: V1
 {
   "version": "V1",
   "data": {
-    "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+    "accountIds": [
+      "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+      "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+    ],
     "oldestTime": "2022-07-01T15:43:00.123456Z",
     "newestTime": "2024-06-30T19:20:30.123456Z"
   }
@@ -155,7 +160,10 @@ The following is a non-normative example of a response from the Provider:
 {
   "version": "V1",
   "data": {
-    "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+    "accountIds": [
+      "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+      "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+    ],
     "oldestTime": "2022-07-01T15:43:00.123456Z",
     "newestTime": "2024-06-30T19:20:30.123456Z"
   },
@@ -194,7 +202,10 @@ The following is a non-normative example of a response from the Provider:
 {
   "version": "V1",
   "data": {
-    "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+    "accountIds": [
+      "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+      "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+    ],
     "oldestTime": "2022-07-01T15:43:00.123456Z",
     "newestTime": "2024-06-30T19:20:30.123456Z"
   },
@@ -243,7 +254,7 @@ The following is a non-normative example of a response from the Provider:
   "version": "V1",
   "data": [
     {
-      "accountId": "jdnmwucgrchzngrqieryhiovpvzknokkwsediggdlnxgxizegvwpwfflgavkrbay",
+      "accountId": "67d542f5-e0ec-4df5-821e-4dbf02c4403f",
       "amount": "133.55",
       "apcaNumber": "484799",
       "billerCode": "75556",
