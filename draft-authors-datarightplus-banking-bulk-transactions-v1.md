@@ -22,11 +22,19 @@ organization="Biza.io"
 
 [[author]]
 initials="B."
-surname="Salijooghi"
+surname="Saljooghi"
 fullname="Benjamin Saljooghi"
 organization="Biza.io"
   [author.address]
   email = "bsaljooghi@biza.io"
+
+[[author]]
+initials="W."
+surname="Cai"
+fullname="Wei Cai"
+organization="Biza.io"
+  [author.address]
+  email = "wcai@biza.io"
 
 %%%
 
