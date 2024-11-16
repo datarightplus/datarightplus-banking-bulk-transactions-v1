@@ -3,9 +3,9 @@
 
 
 datarightplus                                                     S. Low
-Internet-Draft                                                   Biza.io
-Intended status: Experimental                            17 October 2024
-Expires: 20 April 2025
+Internet-Draft                                             B. Salijooghi
+Intended status: Experimental                                    Biza.io
+Expires: 20 May 2025                                    16 November 2024
 
 
                   DataRight+: Bulk Transaction Detail
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 April 2025.
+   This Internet-Draft will expire on 20 May 2025.
 
 Copyright Notice
 
@@ -76,7 +76,7 @@ Table of Contents
      7.3.  Retrieve Detail Not Ready Error Response
    8.  Implementation Considerations
    9.  Normative References
-   Author's Address
+   Authors' Addresses
 
 1.  Scope
 
@@ -647,8 +647,13 @@ x-v: V1
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-Author's Address
+Authors' Addresses
 
    Stuart Low
    Biza.io
    Email: stuart@biza.io
+
+
+   Benjamin Saljooghi
+   Biza.io
+   Email: bsaljooghi@biza.io
