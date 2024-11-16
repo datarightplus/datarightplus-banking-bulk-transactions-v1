@@ -3,9 +3,9 @@
 
 
 datarightplus                                                     S. Low
-Internet-Draft                                                   Biza.io
-Intended status: Experimental                             1 October 2024
-Expires: 4 April 2025
+Internet-Draft                                             B. Salijooghi
+Intended status: Experimental                                    Biza.io
+Expires: 20 May 2025                                    16 November 2024
 
 
                   DataRight+: Bulk Transaction Detail
@@ -43,7 +43,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 April 2025.
+   This Internet-Draft will expire on 20 May 2025.
 
 Copyright Notice
 
@@ -76,7 +76,7 @@ Table of Contents
      7.3.  Retrieve Detail Not Ready Error Response
    8.  Implementation Considerations
    9.  Normative References
-   Author's Address
+   Authors' Addresses
 
 1.  Scope
 
@@ -220,58 +220,64 @@ Table of Contents
    RequestBankingTransactionDetailListDataV1 and containing the
    following attributes:
 
-    +============+=============+==================+===================+
-    | Attribute  | Requirement | Type             | Description       |
-    +============+=============+==================+===================+
-    | accountId  | REQUIRED    | String           | ID of a specific  |
-    |            |             |                  | account to obtain |
-    |            |             |                  | data for.  This   |
-    |            |             |                  | is a tokenised ID |
-    |            |             |                  | previously        |
-    |            |             |                  | obtained from the |
-    |            |             |                  | List Banking      |
-    |            |             |                  | Accounts          |
-    |            |             |                  | endpoint.         |
-    +------------+-------------+------------------+-------------------+
-    | oldestTime | REQUIRED    | String           | Constrain the     |
-    |            |             | (DateTimeString) | transaction       |
-    |            |             |                  | history request   |
-    |            |             |                  | to transactions   |
-    |            |             |                  | with effective    |
-    |            |             |                  | time at or after  |
-    |            |             |                  | this date/time.   |
-    |            |             |                  | Format is aligned |
-    |            |             |                  | to DateTimeString |
-    |            |             |                  | common type.      |
-    +------------+-------------+------------------+-------------------+
-    | newestTime | REQUIRED    | String           | Constrain the     |
-    |            |             | (DateTimeString) | transaction       |
-    |            |             |                  | history request   |
-    |            |             |                  | to transactions   |
-    |            |             |                  | with effective    |
-    |            |             |                  | time at or before |
-    |            |             |                  | this date/time.   |
-    |            |             |                  | Format is aligned |
-    |            |             |                  | to DateTimeString |
-    |            |             |                  | common type.      |
-    +------------+-------------+------------------+-------------------+
-    | minAmount  | OPTIONAL    | String           | Filter            |
-    |            |             | (AmountString)   | transactions to   |
-    |            |             |                  | only transactions |
-    |            |             |                  | with amounts      |
-    |            |             |                  | higher or equal   |
-    |            |             |                  | to than this      |
-    |            |             |                  | amount            |
-    +------------+-------------+------------------+-------------------+
-    | maxAmount  | OPTIONAL    | String           | Filter            |
-    |            |             | (AmountString)   | transactions to   |
-    |            |             |                  | only transactions |
-    |            |             |                  | with amounts less |
-    |            |             |                  | than or equal to  |
-    |            |             |                  | than this amount  |
-    +------------+-------------+------------------+-------------------+
+   Defined within [DATARIGHTPLUS-REDOCLY-ID2] as
+   RequestBankingTransactionDetailListDataV1 this schema is used to
+   provide the request information, is replayed by the Get Banking
+   Transaction Detail List Status endpoint, and is intended to be a
+   like-for-like to the input parameters for List Transactions for
+   Banking Account as outlined within [CDS].
 
-                                  Table 2
+   +============+=============+==================+====================+
+   | Attribute  | Requirement | Type             | Description        |
+   +============+=============+==================+====================+
+   | accountIds | OPTIONAL    | List (String)    | A list of          |
+   |            |             |                  | accountId obtained |
+   |            |             |                  | from the List      |
+   |            |             |                  | Banking Accounts   |
+   |            |             |                  | endpoint.  If not  |
+   |            |             |                  | present all        |
+   |            |             |                  | accounts in an     |
+   |            |             |                  | agreement are      |
+   |            |             |                  | included.          |
+   +------------+-------------+------------------+--------------------+
+   | oldestTime | REQUIRED    | String           | Constrain the      |
+   |            |             | (DateTimeString) | transaction        |
+   |            |             |                  | history request to |
+   |            |             |                  | transactions with  |
+   |            |             |                  | effective time at  |
+   |            |             |                  | or after this      |
+   |            |             |                  | date/time.  Format |
+   |            |             |                  | is aligned to      |
+   |            |             |                  | DateTimeString     |
+   |            |             |                  | common type.       |
+   +------------+-------------+------------------+--------------------+
+   | newestTime | REQUIRED    | String           | Constrain the      |
+   |            |             | (DateTimeString) | transaction        |
+   |            |             |                  | history request to |
+   |            |             |                  | transactions with  |
+   |            |             |                  | effective time at  |
+   |            |             |                  | or before this     |
+   |            |             |                  | date/time.  Format |
+   |            |             |                  | is aligned to      |
+   |            |             |                  | DateTimeString     |
+   |            |             |                  | common type.       |
+   +------------+-------------+------------------+--------------------+
+   | minAmount  | OPTIONAL    | String           | Filter             |
+   |            |             | (AmountString)   | transactions to    |
+   |            |             |                  | only transactions  |
+   |            |             |                  | with amounts       |
+   |            |             |                  | higher or equal to |
+   |            |             |                  | than this amount   |
+   +------------+-------------+------------------+--------------------+
+   | maxAmount  | OPTIONAL    | String           | Filter             |
+   |            |             | (AmountString)   | transactions to    |
+   |            |             |                  | only transactions  |
+   |            |             |                  | with amounts less  |
+   |            |             |                  | than or equal to   |
+   |            |             |                  | than this amount   |
+   +------------+-------------+------------------+--------------------+
+
+                                 Table 2
 
    *Note:* For requests related to this specification the Initiator
    SHALL NOT include any other attributes than those documented above.
@@ -383,7 +389,10 @@ Table of Contents
    {
      "version": "V1",
      "data": {
-       "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+       "accountIds": [
+         "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+         "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+       ],
        "oldestTime": "2022-07-01T15:43:00.123456Z",
        "newestTime": "2024-06-30T19:20:30.123456Z"
      }
@@ -397,7 +406,10 @@ Table of Contents
    {
      "version": "V1",
      "data": {
-       "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+       "accountIds": [
+         "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+         "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+       ],
        "oldestTime": "2022-07-01T15:43:00.123456Z",
        "newestTime": "2024-06-30T19:20:30.123456Z"
      },
@@ -438,7 +450,10 @@ x-v: V1
    {
      "version": "V1",
      "data": {
-       "accountId": "6ecc1b30-5889-49d4-a988-e44b4e215574",
+       "accountIds": [
+         "7b2604da-0810-4ad4-8c74-7ce0487ed26e",
+         "67d542f5-e0ec-4df5-821e-4dbf02c4403f"
+       ],
        "oldestTime": "2022-07-01T15:43:00.123456Z",
        "newestTime": "2024-06-30T19:20:30.123456Z"
      },
@@ -506,7 +521,7 @@ x-v: V1
      "version": "V1",
      "data": [
        {
-         "accountId": "jdnmwucgrchzngrqieryhiovpvzknokkwsediggdlnxgxizegvwpwfflgavkrbay",
+         "accountId": "67d542f5-e0ec-4df5-821e-4dbf02c4403f",
          "amount": "133.55",
          "apcaNumber": "484799",
          "billerCode": "75556",
@@ -632,8 +647,13 @@ x-v: V1
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
-Author's Address
+Authors' Addresses
 
    Stuart Low
    Biza.io
    Email: stuart@biza.io
+
+
+   Benjamin Saljooghi
+   Biza.io
+   Email: bsaljooghi@biza.io
