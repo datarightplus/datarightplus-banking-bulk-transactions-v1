@@ -25,8 +25,8 @@ initials="B."
 surname="Salijooghi"
 fullname="Benjamin Saljooghi"
 organization="Biza.io"
-[author.address]
-email = "bsaljooghi@biza.io"
+  [author.address]
+  email = "bsaljooghi@biza.io"
 
 %%%
 
