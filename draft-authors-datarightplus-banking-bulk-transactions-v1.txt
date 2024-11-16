@@ -3,9 +3,10 @@
 
 
 datarightplus                                                     S. Low
-Internet-Draft                                             B. Salijooghi
-Intended status: Experimental                                    Biza.io
-Expires: 20 May 2025                                    16 November 2024
+Internet-Draft                                              B. Saljooghi
+Intended status: Experimental                                     W. Cai
+Expires: 20 May 2025                                             Biza.io
+                                                        16 November 2024
 
 
                   DataRight+: Bulk Transaction Detail
@@ -657,3 +658,8 @@ Authors' Addresses
    Benjamin Saljooghi
    Biza.io
    Email: bsaljooghi@biza.io
+
+
+   Wei Cai
+   Biza.io
+   Email: wcai@biza.io
