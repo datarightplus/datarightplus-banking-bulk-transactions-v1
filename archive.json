@@ -1,0 +1,328 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2025-02-11T00:21:17.575578+00:00",
+  "repo": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 7,
+      "id": "I_kwDOL1h0bs6gvFzZ",
+      "title": "\"Get Banking Transaction Detail List Status\" endpoint response does not tell client when the action expires",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/issues/7",
+      "state": "OPEN",
+      "author": "wcai-biza",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "`MetaRequestBankingTransactionDetailListV1.status` has an \"EXPIRED\" value and Spec says \"EXPIRED\" means \"Completed successfully but no longer available for download\". But a client does not have any clue when the action expires until they find it already expires.\r\n\r\nA solution is to introduce a TTL field in `MetaRequestBankingTransactionDetailListV1`.",
+      "createdAt": "2024-11-27T01:58:35Z",
+      "updatedAt": "2024-11-27T01:58:35Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOL1h0bs6gvINA",
+      "title": "Missing guidance on whether data holders can purge EXPIRED actions",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/issues/8",
+      "state": "OPEN",
+      "author": "wcai-biza",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "It is an unnecessary burden to require data holders to retain EXPIRED bulk transaction actions forever. We need guidance in the spec on whether data holders can purge EXPIRED actions, and requirement on the minimum retention period.",
+      "createdAt": "2024-11-27T02:05:57Z",
+      "updatedAt": "2024-11-27T02:27:21Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "perlboy",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hmmm, we don't require providers to retain forever in spec, we don't say they shouldn't either.... \r\n\r\nImplementation considerations is probably the right place for this, it's unclear how prescriptive one _should_ be especially in the context this is primarily pitched as an alternate to the synchronous call at the moment.",
+          "createdAt": "2024-11-27T02:27:20Z",
+          "updatedAt": "2024-11-27T02:27:20Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 1,
+      "id": "PR_kwDOL1h0bs5827QK",
+      "title": "RFC Restructure, add examples and feedback",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/pull/1",
+      "state": "MERGED",
+      "author": "perlboy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "perlboy"
+      ],
+      "labels": [],
+      "body": "This restructures the RFC and includes:\r\n1. Explicitly outlining request/responses\r\n2. Additional examples incorporating errors\r\n3. Tweaking behaviours and implementation considerations based on feedback\r\n\r\n",
+      "createdAt": "2024-09-27T00:14:05Z",
+      "updatedAt": "2024-10-17T05:03:02Z",
+      "baseRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "baseRefName": "main",
+      "baseRefOid": "c38ce13785d947c235c21688a7ea6e31a614655a",
+      "headRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "headRefName": "restructure-with-examples-improvements",
+      "headRefOid": "0122158eaaeaa30ef3a4608c1ff1081ba818343b",
+      "closedAt": "2024-09-27T02:00:05Z",
+      "mergedAt": "2024-09-27T02:00:05Z",
+      "mergedBy": "perlboy",
+      "mergeCommit": {
+        "oid": "fd6a11745de5b1861a811f39ac56cb35a2d7e0f5"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOL1h0bs6LCL-Z",
+          "commit": {
+            "abbreviatedOid": "0122158"
+          },
+          "author": "wcai-biza",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-09-27T01:49:10Z",
+          "updatedAt": "2024-09-27T01:49:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "PR_kwDOL1h0bs59M5gk",
+      "title": "Replace oldestDate/newestDate with oldestTime/newestTime in RequestBankingTransactionDetailList",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/pull/2",
+      "state": "MERGED",
+      "author": "wcai-biza",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-10-01T05:28:33Z",
+      "updatedAt": "2024-11-16T03:02:52Z",
+      "baseRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "baseRefName": "main",
+      "baseRefOid": "fd6a11745de5b1861a811f39ac56cb35a2d7e0f5",
+      "headRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "headRefName": "fix-bulk-tx-request-oldest-newest",
+      "headRefOid": "2b9e0ce369dab7a73bb94391cb4111dd0a617ce6",
+      "closedAt": "2024-10-02T02:49:42Z",
+      "mergedAt": "2024-10-02T02:49:42Z",
+      "mergedBy": "perlboy",
+      "mergeCommit": {
+        "oid": "4e35dc95238feae4622e3e38813aa4e6a2960ed0"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 3,
+      "id": "PR_kwDOL1h0bs5-6gWh",
+      "title": "Introduce multiple account ids with examples",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/pull/3",
+      "state": "MERGED",
+      "author": "perlboy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "perlboy"
+      ],
+      "labels": [
+        "enhancement"
+      ],
+      "body": "Introduces multiple account identifiers available for submission.",
+      "createdAt": "2024-10-17T04:49:19Z",
+      "updatedAt": "2024-10-17T05:03:03Z",
+      "baseRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "baseRefName": "main",
+      "baseRefOid": "4e35dc95238feae4622e3e38813aa4e6a2960ed0",
+      "headRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "headRefName": "multiple-accountids",
+      "headRefOid": "03db75bb16d74b8cae3595753e56c4e196c03448",
+      "closedAt": "2024-10-17T05:01:48Z",
+      "mergedAt": "2024-10-17T05:01:48Z",
+      "mergedBy": "perlboy",
+      "mergeCommit": {
+        "oid": "84569d3d50c3b196c34ccb0e0a28f420343c2510"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOL1h0bs6NgsHN",
+          "commit": {
+            "abbreviatedOid": "03db75b"
+          },
+          "author": "wcai-biza",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2024-10-17T05:01:22Z",
+          "updatedAt": "2024-10-17T05:01:22Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "PR_kwDOL1h0bs6CHPBl",
+      "title": "Add BS as author",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/pull/4",
+      "state": "MERGED",
+      "author": "perlboy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "perlboy"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-11-16T02:59:29Z",
+      "updatedAt": "2024-11-16T02:59:51Z",
+      "baseRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "baseRefName": "main",
+      "baseRefOid": "84569d3d50c3b196c34ccb0e0a28f420343c2510",
+      "headRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "headRefName": "add-author",
+      "headRefOid": "18a327f787c4ed8c49017785bd2bcbc94aa59eff",
+      "closedAt": "2024-11-16T02:59:50Z",
+      "mergedAt": "2024-11-16T02:59:50Z",
+      "mergedBy": "perlboy",
+      "mergeCommit": {
+        "oid": "14a8dbcb14a92b2f3d2c31d478ba558d6e2f5451"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 5,
+      "id": "PR_kwDOL1h0bs6CHPGl",
+      "title": "Fix indent",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/pull/5",
+      "state": "MERGED",
+      "author": "perlboy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-11-16T03:00:34Z",
+      "updatedAt": "2024-11-16T03:00:42Z",
+      "baseRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "baseRefName": "main",
+      "baseRefOid": "14a8dbcb14a92b2f3d2c31d478ba558d6e2f5451",
+      "headRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "headRefName": "add-author",
+      "headRefOid": "159aa570069b210efa45be84036327d0293718ab",
+      "closedAt": "2024-11-16T03:00:41Z",
+      "mergedAt": "2024-11-16T03:00:41Z",
+      "mergedBy": "perlboy",
+      "mergeCommit": {
+        "oid": "4a82dd3e161c62c187a877c2089b9d74a36428c0"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 6,
+      "id": "PR_kwDOL1h0bs6CHPim",
+      "title": "Add Cai and fix spelling",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/pull/6",
+      "state": "MERGED",
+      "author": "perlboy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2024-11-16T03:06:02Z",
+      "updatedAt": "2024-11-16T03:06:11Z",
+      "baseRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "baseRefName": "main",
+      "baseRefOid": "4a82dd3e161c62c187a877c2089b9d74a36428c0",
+      "headRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "headRefName": "add-author",
+      "headRefOid": "fba049fb3505db94a20c7320d152f59e6d73440c",
+      "closedAt": "2024-11-16T03:06:09Z",
+      "mergedAt": "2024-11-16T03:06:09Z",
+      "mergedBy": "perlboy",
+      "mergeCommit": {
+        "oid": "134ab09f3c6c8a1fe0831092028f556ff3377bc8"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 9,
+      "id": "PR_kwDOL1h0bs6KiTCC",
+      "title": "Upgrade to latest github workflow",
+      "url": "https://github.com/datarightplus/datarightplus-banking-bulk-transactions-v1/pull/9",
+      "state": "MERGED",
+      "author": "perlboy",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-02-09T00:42:05Z",
+      "updatedAt": "2025-02-09T00:42:29Z",
+      "baseRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "baseRefName": "main",
+      "baseRefOid": "134ab09f3c6c8a1fe0831092028f556ff3377bc8",
+      "headRepository": "datarightplus/datarightplus-banking-bulk-transactions-v1",
+      "headRefName": "upgrade-github-workflow",
+      "headRefOid": "71b136ee83e42c59859b61df895c6b615209fc1e",
+      "closedAt": "2025-02-09T00:42:28Z",
+      "mergedAt": "2025-02-09T00:42:28Z",
+      "mergedBy": "perlboy",
+      "mergeCommit": {
+        "oid": "f1ad2323c8046774759285f1f6a6f6feb4aa9272"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
